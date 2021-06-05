@@ -2,6 +2,7 @@ package jwtsession.service;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,14 +42,20 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 	public TokenStatus isValidToken(String accessToken) {
 
 		TokenStatus tokenStatus = new TokenStatus();
+		JwtSessionEntity jwtSessionToken = jwtSessionDao.findByAccessToken(accessToken);
 
 		try {
 
+			if (Objects.isNull(jwtSessionToken)) {
+
+				tokenStatus.setStatus(TokenStatusConstant.FALSE);
+				tokenStatus.setMessage("Your session has been expired.Please login again");
+				tokenStatus.setAccessToken(accessToken);
+				return tokenStatus;
+			}
 			jwtAccessTokenUtil.validateToken(accessToken);
 
 		} catch (ExpiredJwtException exception) {
-
-			JwtSessionEntity jwtSessionToken = repository.findByAccessToken(accessToken);
 
 			if (jwtSessionToken != null) {
 
@@ -68,6 +75,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 			else {
 				tokenStatus.setStatus(TokenStatusConstant.FALSE);
 				tokenStatus.setMessage("Your session have been expired. Please login again");
+				tokenStatus.setAccessToken(accessToken);
 				return tokenStatus;
 			}
 
@@ -132,7 +140,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 		TokenStatus tokenStatus = new TokenStatus();
 		if (count != null) {
 
-			tokenStatus.setStatus(TokenStatusConstant.TRUE);
+			tokenStatus.setStatus(TokenStatusConstant.FALSE);
 			tokenStatus.setMessage(TokenStatusConstant.MESSAGE);
 		}
 
@@ -155,7 +163,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 			user_id = jwtAccessTokenUtil.getUserId(map.get("token"));
 			repository.removeAllTokensById(user_id);
 		}
-		tokenStatus.setStatus(TokenStatusConstant.TRUE);
+		tokenStatus.setStatus(TokenStatusConstant.FALSE);
 		tokenStatus.setCreatedAt(LocalDateTime.now());
 		tokenStatus.setMessage(TokenStatusConstant.MESSAGE);
 

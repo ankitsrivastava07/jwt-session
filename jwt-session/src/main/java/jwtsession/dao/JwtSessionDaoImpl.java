@@ -34,7 +34,6 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 
 	@Override
 	public Boolean isTokenExist(String token) {
-		repository.findByAccessToken(token);
-		return null;
+		return repository.findByAccessToken(token) == null ? false : true;
 	}
 }
