@@ -95,7 +95,6 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 	public TokenStatus defaultResponseFallbackMethod(String accessToken) {
 
 		TokenStatus tokenStatus = new TokenStatus();
-		System.out.println("defaultResponseFallbackMethod");
 		tokenStatus.setStatus(TokenStatusConstant.FALSE);
 		tokenStatus.setMessage("Sorry Server is currently down.Please try again later");
 		tokenStatus.setAccessToken(accessToken);
@@ -105,7 +104,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 	@HystrixCommand(fallbackMethod = "defaultResponseFallbackMethod", commandProperties = {
 			@HystrixProperty(name = "command.default.execution.timeout.enabled:", value = "true"),
 			@HystrixProperty(name = "hystrix.command.default.execution.timeout.enabled", value = "true"),
-			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1") })
+			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "10000") })
 	public String getFirstName(Long userId) {
 		String firstName = userServiceProxy.getFirstName(userId).getBody();
 		return firstName;
