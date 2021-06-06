@@ -12,8 +12,8 @@ public interface JwtSessionRepository extends JpaRepository<JwtSessionEntity, Lo
 	JwtSessionEntity findByAccessToken(String accessToken);
 
 	@Modifying
-	@Query(value = "delete from token_session where not refresh_token = ?1 and user_id = ?2 ", nativeQuery = true)
-	void removeAllTokensNot(String token, Long user_id);
+	@Query(value = "delete from token_session where not access_token = ?1 and user_id = ?2 ", nativeQuery = true)
+	void removeAllTokensNot(String accessToken, Long user_id);
 
 	@Modifying
 	@Query(value = "delete from token_session where user_id = ?1", nativeQuery = true)

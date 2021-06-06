@@ -102,8 +102,6 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 	}
 
 	@HystrixCommand(fallbackMethod = "defaultResponseFallbackMethod", commandProperties = {
-			@HystrixProperty(name = "command.default.execution.timeout.enabled:", value = "true"),
-			@HystrixProperty(name = "hystrix.command.default.execution.timeout.enabled", value = "true"),
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "90000") })
 	public String getFirstName(Long userId) {
 		String firstName = userServiceProxy.getFirstName(userId).getBody();
@@ -153,9 +151,9 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 		Long user_id = null;
 		TokenStatus tokenStatus = new TokenStatus();
 		if (map != null && !map.isEmpty() && map.get("request").equals("change-password")) {
-			String token = map.get("token");
-			user_id = jwtAccessTokenUtil.getUserId(token);
-			repository.removeAllTokensNot(token, user_id);
+			String accessToken = map.get("token");
+			user_id = jwtAccessTokenUtil.getUserId(accessToken);
+			repository.removeAllTokensNot(accessToken, user_id);
 		}
 
 		else if (!map.isEmpty()) {

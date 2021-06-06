@@ -28,9 +28,7 @@ public class JwtSessionController {
 
 	@PostMapping("/validate-token")
 	public ResponseEntity<?> isValidToken(@RequestBody(required = true) String jwt, HttpServletRequest request) {
-
 		TokenStatus tokenStatus = jwtSessionService.isValidToken(jwt);
-
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 
