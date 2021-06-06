@@ -104,7 +104,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 	@HystrixCommand(fallbackMethod = "defaultResponseFallbackMethod", commandProperties = {
 			@HystrixProperty(name = "command.default.execution.timeout.enabled:", value = "true"),
 			@HystrixProperty(name = "hystrix.command.default.execution.timeout.enabled", value = "true"),
-			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "10000") })
+			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "90000") })
 	public String getFirstName(Long userId) {
 		String firstName = userServiceProxy.getFirstName(userId).getBody();
 		return firstName;
