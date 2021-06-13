@@ -3,13 +3,9 @@ package jwtsession.service;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
-
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.jsonwebtoken.ExpiredJwtException;
 import jwtsession.constant.TokenStatusConstant;
@@ -37,9 +33,6 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 
 	@Autowired
 	private JwtRefreshTokenUtil jwtRefreshTokenUtil;
-
-	@Autowired
-	private RestTemplate restTemplate;
 
 	@Override
 	public TokenStatus isValidToken(String accessToken) {
@@ -88,23 +81,20 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 		tokenStatus.setMessage(TokenStatusConstant.MESSAGE);
 		tokenStatus.setAccessToken(accessToken);
 
-		String firstName = getFirstName(jwtAccessTokenUtil.getUserId(accessToken));
+		String firstName = getFirstName(jwtAccessTokenUtil.getUserId(accessToken)).getFirstName();
 		tokenStatus.setFirstName(firstName);
 		return tokenStatus;
 	}
 
 	@CircuitBreaker(name = "user", fallbackMethod = "defaultfallbackMethodGetFirstName")
-	public String getFirstName(Long userId) {
-
-		// String firstName =
-		// restTemplate.postForObject("http://localhost:8081/users/get-first-name",userId,
-		// String.class);
-
+	public TokenStatus getFirstName(Long userId) {
 		String firstName = userServiceProxy.getFirstName(userId).getBody();
-		return firstName;
+		TokenStatus tokenStatus = new TokenStatus();
+		tokenStatus.setFirstName(firstName);
+		return tokenStatus;
 	}
 
-	public TokenStatus defaultfallbackMethodGetFirstName(Long userId, feign.RetryableException exception) {
+	public TokenStatus defaultfallbackMethodGetFirstName(Throwable exception) {
 
 		TokenStatus tokenStatus = new TokenStatus();
 		tokenStatus.setStatus(TokenStatusConstant.FALSE);
