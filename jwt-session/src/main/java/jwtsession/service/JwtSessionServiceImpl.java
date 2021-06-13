@@ -7,10 +7,10 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
-
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.jsonwebtoken.ExpiredJwtException;
 import jwtsession.constant.TokenStatusConstant;
 import jwtsession.controller.TokenStatus;
@@ -37,6 +37,9 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 
 	@Autowired
 	private JwtRefreshTokenUtil jwtRefreshTokenUtil;
+
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@Override
 	public TokenStatus isValidToken(String accessToken) {
@@ -87,25 +90,26 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 
 		String firstName = getFirstName(jwtAccessTokenUtil.getUserId(accessToken));
 		tokenStatus.setFirstName(firstName);
-
 		return tokenStatus;
-
 	}
 
-	public TokenStatus defaultResponseFallbackMethod(String accessToken) {
+	@CircuitBreaker(name = "user", fallbackMethod = "defaultfallbackMethodGetFirstName")
+	public String getFirstName(Long userId) {
+
+		// String firstName =
+		// restTemplate.postForObject("http://localhost:8081/users/get-first-name",userId,
+		// String.class);
+
+		String firstName = userServiceProxy.getFirstName(userId).getBody();
+		return firstName;
+	}
+
+	public TokenStatus defaultfallbackMethodGetFirstName(Long userId, feign.RetryableException exception) {
 
 		TokenStatus tokenStatus = new TokenStatus();
 		tokenStatus.setStatus(TokenStatusConstant.FALSE);
 		tokenStatus.setMessage("Sorry Server is currently down.Please try again later");
-		tokenStatus.setAccessToken(accessToken);
 		return tokenStatus;
-	}
-
-	@HystrixCommand(fallbackMethod = "defaultResponseFallbackMethod", commandProperties = {
-			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "90000") })
-	public String getFirstName(Long userId) {
-		String firstName = userServiceProxy.getFirstName(userId).getBody();
-		return firstName;
 	}
 
 	@Override
