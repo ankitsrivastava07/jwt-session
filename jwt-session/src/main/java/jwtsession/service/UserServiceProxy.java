@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "users", url = "localhost:8081")
+@FeignClient(name = "users", url = "http://microservice-users.herokuapp.com")
 public interface UserServiceProxy {
 
 	@PostMapping(value="/users/get-first-name")
