@@ -17,12 +17,10 @@ public class JwtSessionController {
 
 	@Autowired
 	private JwtSessionService jwtSessionService;
-	
+
 	@PostMapping("/save-token")
-	public ResponseEntity<?> generateToken(@RequestBody Long userId) {
-
-		TokenStatus tokenStatus = jwtSessionService.generateToken(userId);
-
+	public ResponseEntity<?> generateToken(@RequestBody CreateTokenRequest request) {
+		TokenStatus tokenStatus = jwtSessionService.generateToken(request);
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 
@@ -43,6 +41,14 @@ public class JwtSessionController {
 	public ResponseEntity<?> invalidateTokens(@RequestBody JwtSessionDto dto, HttpServletRequest request) {
 
 		TokenStatus tokenStatus = jwtSessionService.removeAllTokens(dto.getToken());
+
+		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
+	}
+
+	@PostMapping(value = "/generate-new-token")
+	public ResponseEntity<?> generateNewToken(@RequestBody String token) {
+
+		TokenStatus tokenStatus = jwtSessionService.generateNewToken(token);
 
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}

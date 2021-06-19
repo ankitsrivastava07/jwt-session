@@ -12,6 +12,8 @@ public class TokenStatus {
 
 	private String accessToken;
 
+	private Long userId;
+
 	private LocalDateTime createdAt;
 
 	private String firstName;

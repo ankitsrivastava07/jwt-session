@@ -32,6 +32,9 @@ public class JwtSessionEntity {
 	@Column(name = "refresh_token", nullable = false)
 	private String refreshToken;
 
+	@Column(name = "first_name", nullable = false)
+	private String firstName;
+	
 	@PrePersist
 	public void prePersist() {
 		this.createdAt = LocalDateTime.now();
