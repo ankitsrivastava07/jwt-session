@@ -138,8 +138,8 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 		TokenStatus tokenStatus = new TokenStatus();
 		if (count != null) {
 
-			tokenStatus.setStatus(TokenStatusConstant.FALSE);
-			tokenStatus.setMessage(TokenStatusConstant.MESSAGE);
+			tokenStatus.setStatus(TokenStatusConstant.TRUE);
+			tokenStatus.setMessage(TokenStatusConstant.LOGOUT);
 		}
 
 		return tokenStatus;
