@@ -7,14 +7,11 @@ import lombok.Data;
 public class TokenStatus {
 
 	private boolean status;
-
 	private String message;
-
 	private String accessToken;
-
 	private Long userId;
-
 	private LocalDateTime createdAt;
-
+	private Boolean isAccessTokenNewCreated;
+	private LocalDateTime expireAt;
 	private String firstName;
 }

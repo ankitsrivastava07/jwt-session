@@ -3,8 +3,11 @@ package jwtsession.jwtutil;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
+import jwtsession.dao.RandomString;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -27,7 +30,8 @@ public class JwtAccessTokenUtil {
 	}
 
 	public Date getExpirationDateFromToken(String token) {
-		return getClaimFromToken(token, Claims::getExpiration);
+		final Claims claims = getAllClaimsFromToken(token);
+		return claims.get("exp",Date.class);
 	}
 
 	public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
@@ -49,12 +53,19 @@ public class JwtAccessTokenUtil {
 		return doGenerateToken(claims, userId);
 	}
 
-	private String doGenerateToken(Map<String, Object> claims, Long userId) {
+	public String getTokenIdentityNumber(String accessToken) {
+		Claims claims = getAllClaimsFromToken(accessToken);
+		String identity = claims.get("identity",String.class);
+		return identity;
+	}
 
-		return Jwts.builder().setClaims(claims).setSubject(String.valueOf(userId))
+	private String doGenerateToken(Map<String, Object> claims, Long userId) {
+		return Jwts.builder().setSubject(String.valueOf(userId))
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-				.signWith(SignatureAlgorithm.HS512, secret).compact();
+				.signWith(SignatureAlgorithm.HS512, secret)
+				.claim("identity", RandomString.getAlphaNumericString(20))
+				.compact();
 	}
 
 	public Boolean validateToken(String refreshToken) {

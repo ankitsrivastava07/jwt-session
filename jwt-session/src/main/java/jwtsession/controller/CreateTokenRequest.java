@@ -1,9 +1,12 @@
 package jwtsession.controller;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CreateTokenRequest {
 	private String firstName;
 	private Long userId;
+	private String token;
 }

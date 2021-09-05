@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import jwtsession.dateutil.DateUtil;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -26,13 +27,14 @@ public class JwtRefreshTokenUtil {
 		return Long.valueOf(getClaimFromToken(token, Claims::getSubject));
 	}
 
-	public Date getExpirationDateFromToken(String token) {
-		return getClaimFromToken(token, Claims::getExpiration);
-	}
-
 	public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
 		final Claims claims = getAllClaimsFromToken(token);
 		return claimsResolver.apply(claims);
+	}
+
+	public Date getExpirationDateFromToken(String token) {
+		final Claims claims = getAllClaimsFromToken(token);
+		return claims.get("exp",Date.class);
 	}
 
 	private Claims getAllClaimsFromToken(String token) {
@@ -53,7 +55,7 @@ public class JwtRefreshTokenUtil {
 
 		return Jwts.builder().setClaims(claims).setSubject(String.valueOf(userId))
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+				.setExpiration(DateUtil.setExpiraryDaysToRefreshToken(1))
 				.signWith(SignatureAlgorithm.HS512, secret).compact();
 	}
 

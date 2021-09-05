@@ -19,17 +19,30 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 	}
 
 	@Override
+	public JwtSessionEntity findByIdentityToken(String tokenIdentityNumber) {
+		return repository.findByTokenIdentityNumber(tokenIdentityNumber);
+	}
+
+	@Override
+	public JwtSessionEntity findByTokenIdentity(String tokenIdentityNumber) {
+		return repository.findByTokenIdentity(tokenIdentityNumber);
+	}
+
+	@Override
 	public JwtSessionEntity saveToken(JwtSessionEntity entity) {
 		return repository.save(entity);
 	}
 
 	@Transactional
 	@Override
-	public Integer removeToken(String token) {
-
-		Integer deleted = repository.removeToken(token);
-
-		return deleted;
+	public JwtSessionEntity removeToken(String tokenIdentityNumber) {
+		JwtSessionEntity entity = repository.findByTokenIdentityNumber(tokenIdentityNumber);
+		if(entity!=null){
+		entity.setIsActive(Boolean.FALSE);
+		entity.setIsLogined(Boolean.FALSE);
+			repository.save(entity);
+		}
+		return null;
 	}
 
 	@Override

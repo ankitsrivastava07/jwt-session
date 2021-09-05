@@ -6,9 +6,11 @@ public interface JwtSessionDao {
 
 	JwtSessionEntity findByAccessToken(String accessToken);
 
+	JwtSessionEntity findByIdentityToken(String identityToken);
+	JwtSessionEntity findByTokenIdentity(String identityToken);
 	JwtSessionEntity saveToken(JwtSessionEntity entity);
 
-	Integer removeToken(String token);
+	JwtSessionEntity removeToken(String token);
 
 	Boolean isTokenExist(String token);
 }

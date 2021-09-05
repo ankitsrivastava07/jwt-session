@@ -1,6 +1,8 @@
 package jwtsession.controller;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +21,20 @@ public class JwtSessionController {
 	private JwtSessionService jwtSessionService;
 
 	@PostMapping("/save-token")
-	public ResponseEntity<?> generateToken(@RequestBody CreateTokenRequest request) {
-		TokenStatus tokenStatus = jwtSessionService.generateToken(request);
+	public ResponseEntity<?> generateToken(@RequestBody CreateTokenRequest request,HttpServletRequest httpServletRequest) {
+		TokenStatus tokenStatus = jwtSessionService.generateToken(request,httpServletRequest);
+		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
+	}
+
+	@PostMapping("/re-create-token")
+	public ResponseEntity<?> reCreateToken(@RequestBody CreateTokenRequest request,HttpServletRequest httpServletRequest) {
+		TokenStatus tokenStatus = jwtSessionService.generateToken(request,httpServletRequest);
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 
 	@PostMapping("/validate-token")
-	public ResponseEntity<?> isValidToken(@RequestBody(required = true) String jwt, HttpServletRequest request) {
-		TokenStatus tokenStatus = jwtSessionService.isValidToken(jwt);
+	public ResponseEntity<?> isValidToken(@RequestBody(required = true) String jwt, HttpServletRequest request) throws JsonProcessingException {
+		TokenStatus tokenStatus = jwtSessionService.isValidToken(jwt.trim());
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 
