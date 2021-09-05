@@ -17,6 +17,10 @@ public interface JwtSessionRepository extends JpaRepository<JwtSessionEntity, Lo
 	@Query(value="select * from token_session where identity =?1 and is_active = false and is_logined = false",nativeQuery = true)
 	JwtSessionEntity findByTokenIdentity(String identityToken);
 
+	@Modifying(clearAutomatically = true)
+	@Query(value="update token_session set access_token=?1,refresh_token=?2,identity=?3  where identity =?4 and is_active = true and is_logined = true",nativeQuery = true)
+	Integer updateSessionToken(String accessToken,String refreshToken,String identity,String oldIdentityToken);
+
 	@Modifying
 	@Query(value = "delete from token_session where not access_token = ?1 and user_id = ?2 ", nativeQuery = true)
 	void removeAllTokensNot(String accessToken, Long user_id);

@@ -11,6 +11,6 @@ public interface JwtSessionDao {
 	JwtSessionEntity saveToken(JwtSessionEntity entity);
 
 	JwtSessionEntity removeToken(String token);
-
+	Integer updateSessionToken(JwtSessionEntity jwtSessionEntity);
 	Boolean isTokenExist(String token);
 }

@@ -1,5 +1,6 @@
 package jwtsession.dao;
 
+import jwtsession.convertor.DtoToEntityConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,6 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 
 	@Autowired
 	JwtSessionRepository repository;
-
 	@Override
 	public JwtSessionEntity findByAccessToken(String refreshToken) {
 		return repository.findByAccessToken(refreshToken);
@@ -26,6 +26,14 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 	@Override
 	public JwtSessionEntity findByTokenIdentity(String tokenIdentityNumber) {
 		return repository.findByTokenIdentity(tokenIdentityNumber);
+	}
+
+	@Override
+	@Transactional
+	public Integer updateSessionToken(JwtSessionEntity jwtSessionEntity) {
+		DtoToEntityConvertor dtoToEntityConvertor = new DtoToEntityConvertor();
+		String newIdentity=dtoToEntityConvertor.getTokenIdentity(jwtSessionEntity.getAccessToken());
+		return repository.updateSessionToken(jwtSessionEntity.getAccessToken(),jwtSessionEntity.getRefreshToken(),newIdentity,jwtSessionEntity.getTokenIdentity());
 	}
 
 	@Override

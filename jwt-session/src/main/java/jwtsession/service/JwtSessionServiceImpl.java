@@ -69,10 +69,12 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 			else if(jwtSessionEntity!=null){
 				tokenStatus.setAccessToken(accessToken);
 				tokenStatus.setStatus(Boolean.TRUE);
+				//jwtSessionEntity.setTokenIdentity(jwtAccessTokenUtil.generateAccessToken(jwtSessionEntity.getAccessToken()));
 				tokenStatus.setCreatedAt(jwtSessionEntity.getCreatedAt());
 				tokenStatus.setExpireAt(jwtSessionEntity.getExpireAt());
 				tokenStatus.setFirstName(jwtSessionEntity.getFirstName());
 				tokenStatus.setUserId(jwtSessionEntity.getUserId());
+				tokenStatus.setAccessToken(jwtSessionEntity.getAccessToken());
 				tokenStatus.setMessage(TokenStatusConstant.TOKEN_VERIFIED_MESSAGE);
 				return tokenStatus;
 			}
@@ -94,7 +96,10 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 				tokenStatus.setMessage(TokenStatusConstant.TOKEN_CREATED);
 				jwtSessionEntity.setAccessToken(jwtAccessTokenUtil.generateAccessToken(jwtSessionEntity.getUserId()));
 				jwtSessionEntity.setRefreshToken(jwtRefreshTokenUtil.generateRefreshToken(jwtSessionEntity.getUserId()));
-				jwtSessionEntity = jwtSessionDao.saveToken(jwtSessionEntity);
+				String identity=dtoToEntityConvertor.getTokenIdentity(jwtSessionEntity.getAccessToken());
+				jwtSessionEntity.setTokenIdentity(identity);
+				//jwtSessionEntity.setTokenIdentity(jwtAccessTokenUtil.generateAccessToken(jwtSessionEntity.getAccessToken()));
+				jwtSessionEntity=jwtSessionDao.saveToken(jwtSessionEntity);
 				tokenStatus.setCreatedAt(jwtSessionEntity.getCreatedAt());
 				tokenStatus.setIsAccessTokenNewCreated(Boolean.TRUE);
 				tokenStatus.setStatus(Boolean.TRUE);
