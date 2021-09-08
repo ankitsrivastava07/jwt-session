@@ -91,7 +91,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 				//  tokenStatus.set(jwtSessionTokenEntity.getAccessToken());
 			return tokenStatus;
 			}
-			else if(jwtSessionEntity!=null && !jwtRefreshTokenUtil.getExpirationDateFromToken(jwtSessionEntity.getRefreshToken()).before(new Date())) {
+			else if(jwtSessionEntity!=null && jwtRefreshTokenUtil.getExpirationDateFromToken(jwtSessionEntity.getRefreshToken()).before(new Date())) {
 				tokenStatus.setStatus(Boolean.TRUE);
 				tokenStatus.setMessage(TokenStatusConstant.TOKEN_CREATED);
 				jwtSessionEntity.setAccessToken(jwtAccessTokenUtil.generateAccessToken(jwtSessionEntity.getUserId()));
