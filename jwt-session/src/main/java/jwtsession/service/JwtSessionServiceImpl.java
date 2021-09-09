@@ -186,7 +186,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 		}
 		else if (dto!=null && dto.getRequestType().equalsIgnoreCase("change-password-request-by-identity-token")) {
 			user_id = dto.getUserId();
-			repository.removeAllTokensById(user_id,DateUtil.getOneMonthBeforeFromToday(1),LocalDateTime.now());
+			repository.removeAllTokensById(user_id);
 		}
 		tokenStatus.setStatus(TokenStatusConstant.FALSE);
 		tokenStatus.setCreatedAt(LocalDateTime.now());

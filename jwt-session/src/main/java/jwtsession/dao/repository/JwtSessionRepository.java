@@ -28,8 +28,8 @@ public interface JwtSessionRepository extends JpaRepository<JwtSessionEntity, Lo
 	void removeAllTokensNot(String identity, Long user_id);
 
 	@Modifying
-	@Query(value = "delete from token_session where user_id = ?1 and created_at >= ?2 and created_at<=?3", nativeQuery = true)
-	void removeAllTokensById(Long userId, LocalDateTime oneMonthBefore,LocalDateTime todayDate);
+	@Query(value = "delete from token_session where user_id = ?1", nativeQuery = true)
+	void removeAllTokensById(Long userId);
 
 	@Modifying
 	@Query(value = "delete from token_session where access_token = ?1", nativeQuery = true)
