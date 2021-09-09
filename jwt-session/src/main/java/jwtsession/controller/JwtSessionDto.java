@@ -7,5 +7,8 @@ import lombok.Data;
 @Data
 public class JwtSessionDto {
 
-	private Map<String, String> token;
+	private String requestType;
+	private Long userId;
+	private String password;
+	private String token;
 }

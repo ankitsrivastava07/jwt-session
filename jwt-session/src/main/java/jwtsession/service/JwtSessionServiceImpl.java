@@ -9,6 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jwtsession.controller.JwtSessionDto;
 import jwtsession.convertor.DtoToEntityConvertor;
 import jwtsession.dateutil.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +92,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 				//  tokenStatus.set(jwtSessionTokenEntity.getAccessToken());
 			return tokenStatus;
 			}
-			else if(jwtSessionEntity!=null && jwtRefreshTokenUtil.getExpirationDateFromToken(jwtSessionEntity.getRefreshToken()).before(new Date())) {
+			else if(jwtSessionEntity!=null && jwtSessionEntity.getExpireAt().isAfter(LocalDateTime.now())) {
 				tokenStatus.setStatus(Boolean.TRUE);
 				tokenStatus.setMessage(TokenStatusConstant.TOKEN_CREATED);
 				jwtSessionEntity.setAccessToken(jwtAccessTokenUtil.generateAccessToken(jwtSessionEntity.getUserId()));
@@ -172,24 +173,22 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 
 	@Transactional
 	@Override
-	public TokenStatus removeAllTokens(Map<String, String> map) {
-
+	public TokenStatus removeAllTokens(JwtSessionDto dto) {
 		Long user_id = null;
 		TokenStatus tokenStatus = new TokenStatus();
-		if (map != null && !map.isEmpty() && map.get("request").equals("change-password")) {
-			String accessToken = map.get("token");
-			user_id = jwtAccessTokenUtil.getUserId(accessToken);
-			repository.removeAllTokensNot(accessToken, user_id);
+		if (dto != null && dto.getRequestType().equalsIgnoreCase("change-password")) {
+			String identity = dto.getToken();
+			identity=dtoToEntityConvertor.getTokenIdentity(identity);
+			user_id = jwtAccessTokenUtil.getUserId(identity);
+			repository.removeAllTokensNot(identity, user_id);
 		}
-
-		else if (!map.isEmpty()) {
-			user_id = jwtAccessTokenUtil.getUserId(map.get("token"));
-			repository.removeAllTokensById(user_id);
+		else if (dto!=null && dto.getRequestType().equalsIgnoreCase("change-password-request-by-identity-token")) {
+			user_id = dto.getUserId();
+			repository.removeAllTokensById(user_id,DateUtil.getOneMonthBeforeFromToday(1),LocalDateTime.now());
 		}
 		tokenStatus.setStatus(TokenStatusConstant.FALSE);
 		tokenStatus.setCreatedAt(LocalDateTime.now());
 		tokenStatus.setMessage(TokenStatusConstant.MESSAGE);
-
 		return tokenStatus;
 	}
 }

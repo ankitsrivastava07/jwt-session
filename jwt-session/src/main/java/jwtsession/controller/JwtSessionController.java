@@ -40,24 +40,19 @@ public class JwtSessionController {
 
 	@PostMapping("/invalidate-token")
 	public ResponseEntity<?> invalidateToken(@RequestBody String token) {
-
 		TokenStatus tokenStatus = jwtSessionService.removeToken(token);
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/invalidate-tokens")
 	public ResponseEntity<?> invalidateTokens(@RequestBody JwtSessionDto dto, HttpServletRequest request) {
-
-		TokenStatus tokenStatus = jwtSessionService.removeAllTokens(dto.getToken());
-
+		TokenStatus tokenStatus = jwtSessionService.removeAllTokens(dto);
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/generate-new-token")
 	public ResponseEntity<?> generateNewToken(@RequestBody String token) {
-
 		TokenStatus tokenStatus = jwtSessionService.generateNewToken(token);
-
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 

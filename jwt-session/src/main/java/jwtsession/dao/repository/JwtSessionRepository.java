@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import jwtsession.dao.entity.JwtSessionEntity;
 
+import java.time.LocalDateTime;
+
 public interface JwtSessionRepository extends JpaRepository<JwtSessionEntity, Long> {
 
 	@Query(value = "select * from token_session where access_token = ?1 ", nativeQuery = true)
@@ -22,12 +24,12 @@ public interface JwtSessionRepository extends JpaRepository<JwtSessionEntity, Lo
 	Integer updateSessionToken(String accessToken,String refreshToken,String identity,String oldIdentityToken);
 
 	@Modifying
-	@Query(value = "delete from token_session where not access_token = ?1 and user_id = ?2 ", nativeQuery = true)
-	void removeAllTokensNot(String accessToken, Long user_id);
+	@Query(value = "delete from token_session where not identity = ?1 and user_id = ?2 ", nativeQuery = true)
+	void removeAllTokensNot(String identity, Long user_id);
 
 	@Modifying
-	@Query(value = "delete from token_session where user_id = ?1", nativeQuery = true)
-	void removeAllTokensById(Long userId);
+	@Query(value = "delete from token_session where user_id = ?1 and created_at >= ?2 and created_at<=?3", nativeQuery = true)
+	void removeAllTokensById(Long userId, LocalDateTime oneMonthBefore,LocalDateTime todayDate);
 
 	@Modifying
 	@Query(value = "delete from token_session where access_token = ?1", nativeQuery = true)

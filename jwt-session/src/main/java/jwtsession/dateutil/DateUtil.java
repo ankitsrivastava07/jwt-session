@@ -35,4 +35,10 @@ public class DateUtil {
      return time;
     }
 
+    public static LocalDateTime getOneMonthBeforeFromToday(long months){
+        LocalDateTime oneMonthBefore=LocalDateTime.now().minusMonths(months);
+        LocalDateTime today=LocalDateTime.now();
+        return oneMonthBefore;
+    }
+
 }
