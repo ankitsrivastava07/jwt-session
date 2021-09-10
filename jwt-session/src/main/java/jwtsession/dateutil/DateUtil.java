@@ -48,9 +48,15 @@ public class DateUtil {
     }
 
     public static Date addDays(int days){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.DATE, days);
+        Date date = new Date();
+        TimeZone tz = TimeZone.getTimeZone("IST");
+        Calendar calendar = Calendar.getInstance(tz);
+        calendar.setTime(date);
+        calendar.setTimeZone(tz);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+        calendar.add(Calendar.DATE,1);
+        date = calendar.getTime();
         return calendar.getTime();
     }
 
@@ -59,6 +65,8 @@ public class DateUtil {
         Calendar calendar = Calendar.getInstance(tz);
         calendar.setTime(new Date());
         calendar.add(Calendar.MONTH, numberOfMonths);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
         return calendar.getTime();
     }
 }
