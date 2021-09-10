@@ -1,6 +1,7 @@
 package jwtsession.dao.entity;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import jwtsession.dateutil.DateUtil;
 import lombok.Data;
 import lombok.Getter;
 
@@ -30,13 +32,13 @@ public class JwtSessionEntity {
 	private String accessToken;
 
 	@Column(name = "created_at", nullable = false)
-	private LocalDateTime createdAt;
+	private Date createdAt;
 
 	@Column(name = "is_logined", nullable = false,columnDefinition = "boolean default false")
 	private Boolean isLogined;
 
 	@Column(name="expire_at",nullable = false)
-	private LocalDateTime expireAt;
+	private Date expireAt;
 
 	@Column(name = "refresh_token", nullable = false)
 	private String refreshToken;
@@ -61,14 +63,14 @@ public class JwtSessionEntity {
 
 	@PrePersist
 	public void prePersist() {
-		this.createdAt = LocalDateTime.now();
-		this.expireAt=LocalDateTime.now().plusDays(1);
+		this.createdAt = new Date();
+		this.expireAt=DateUtil.addDays(1);
 	}
 
 	@PreUpdate
 	public void preUpdate() {
-		this.createdAt = LocalDateTime.now();
-		this.expireAt=LocalDateTime.now().plusMinutes(30);
+		this.createdAt = new Date();
+		this.expireAt= DateUtil.addDays(1);
 	}
 
 }

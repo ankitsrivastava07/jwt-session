@@ -92,7 +92,13 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 				//  tokenStatus.set(jwtSessionTokenEntity.getAccessToken());
 			return tokenStatus;
 			}
-			else if(jwtSessionEntity!=null && jwtSessionEntity.getExpireAt().isAfter(LocalDateTime.now())) {
+
+			else if(jwtSessionEntity!=null && jwtSessionEntity.getExpireAt().before(new Date())) {
+				tokenStatus.setStatus(Boolean.FALSE);
+				tokenStatus.setMessage(TokenStatusConstant.TOKEN_EXPIRED);
+				return tokenStatus;
+			}
+			else if(jwtSessionEntity!=null) {
 				tokenStatus.setStatus(Boolean.TRUE);
 				tokenStatus.setMessage(TokenStatusConstant.TOKEN_CREATED);
 				jwtSessionEntity.setAccessToken(jwtAccessTokenUtil.generateAccessToken(jwtSessionEntity.getUserId()));
@@ -176,21 +182,14 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 	@Transactional
 	@Override
 	public TokenStatus removeAllTokens(JwtSessionDto dto) {
-		Long user_id = null;
+
 		TokenStatus tokenStatus = new TokenStatus();
-		if (dto != null && dto.getRequestType().equalsIgnoreCase("change-password")) {
-			String identity = dto.getToken();
-			identity=dtoToEntityConvertor.getTokenIdentity(identity);
-			user_id = jwtAccessTokenUtil.getUserId(identity);
-			repository.removeAllTokensNot(identity, user_id);
-		}
-		else if (dto!=null && dto.getRequestType().equalsIgnoreCase("change-password-request-by-identity-token")) {
-			user_id = dto.getUserId();
-			repository.removeAllTokensById(user_id);
-		}
+		Long userId = dto.getUserId();
+		Integer delete=repository.removeAllTokensById(userId,DateUtil.addMonths(-1),new Date());
 		tokenStatus.setStatus(TokenStatusConstant.FALSE);
-		tokenStatus.setCreatedAt(LocalDateTime.now());
+		tokenStatus.setCreatedAt(DateUtil.todayDate());
 		tokenStatus.setMessage(TokenStatusConstant.MESSAGE);
+
 		return tokenStatus;
 	}
 }

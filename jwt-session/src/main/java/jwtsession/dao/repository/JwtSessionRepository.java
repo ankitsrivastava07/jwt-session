@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import jwtsession.dao.entity.JwtSessionEntity;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public interface JwtSessionRepository extends JpaRepository<JwtSessionEntity, Long> {
 
@@ -25,11 +26,11 @@ public interface JwtSessionRepository extends JpaRepository<JwtSessionEntity, Lo
 
 	@Modifying
 	@Query(value = "delete from token_session where not identity = ?1 and user_id = ?2 ", nativeQuery = true)
-	void removeAllTokensNot(String identity, Long user_id);
+	void invalidateTokensExceptCurrent(String identity, Long user_id);
 
 	@Modifying
-	@Query(value = "delete from token_session where user_id = ?1", nativeQuery = true)
-	void removeAllTokensById(Long userId);
+	@Query(value = "delete from token_session where user_id = ?1 and created_at >= ?2 and created_at<=?3", nativeQuery = true)
+	Integer removeAllTokensById(Long userId, Date oneMonthBefore, Date todayDate);
 
 	@Modifying
 	@Query(value = "delete from token_session where access_token = ?1", nativeQuery = true)

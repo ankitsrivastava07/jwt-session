@@ -1,6 +1,7 @@
 package jwtsession.controller;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import jwtsession.constant.TokenStatusConstant;
 import lombok.Data;
@@ -12,8 +13,8 @@ public class TokenStatus {
 	private String message= TokenStatusConstant.TOKEN_EXPIRED;
 	private String accessToken;
 	private Long userId;
-	private LocalDateTime createdAt;
+	private Date createdAt;
 	private Boolean isAccessTokenNewCreated=Boolean.FALSE;
-	private LocalDateTime expireAt;
+	private Date expireAt;
 	private String firstName;
 }
