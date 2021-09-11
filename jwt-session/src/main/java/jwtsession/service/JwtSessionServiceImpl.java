@@ -191,6 +191,11 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 
 		TokenStatus tokenStatus = new TokenStatus();
 		Long userId = dto.getUserId();
+		if(dto.getUserId()==null && dto.getToken()==null){
+			tokenStatus.setCreatedAt(DateUtil.todayDate());
+			tokenStatus.setMessage(TokenStatusConstant.INVALID_REQUEST);
+			return tokenStatus;
+		}
 		Integer delete=repository.removeAllTokensById(userId,DateUtil.addMonths(-1),new Date());
 		tokenStatus.setStatus(TokenStatusConstant.FALSE);
 		tokenStatus.setCreatedAt(DateUtil.todayDate());
