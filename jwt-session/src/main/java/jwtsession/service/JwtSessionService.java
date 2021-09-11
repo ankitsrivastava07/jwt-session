@@ -13,7 +13,7 @@ public interface JwtSessionService {
 
 	TokenStatus isValidToken(String jwt) throws JsonProcessingException;
 
-	TokenStatus generateToken(CreateTokenRequest request, HttpServletRequest httpServletRequest);
+	TokenStatus createToken(CreateTokenRequest request, HttpServletRequest httpServletRequest);
 
 	TokenStatus removeToken(String token);
 

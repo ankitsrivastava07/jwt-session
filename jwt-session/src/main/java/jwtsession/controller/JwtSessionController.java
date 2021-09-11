@@ -22,13 +22,13 @@ public class JwtSessionController {
 
 	@PostMapping("/save-token")
 	public ResponseEntity<?> generateToken(@RequestBody CreateTokenRequest request,HttpServletRequest httpServletRequest) {
-		TokenStatus tokenStatus = jwtSessionService.generateToken(request,httpServletRequest);
+		TokenStatus tokenStatus = jwtSessionService.createToken(request,httpServletRequest);
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 
 	@PostMapping("/re-create-token")
-	public ResponseEntity<?> reCreateToken(@RequestBody CreateTokenRequest request,HttpServletRequest httpServletRequest) {
-		TokenStatus tokenStatus = jwtSessionService.generateToken(request,httpServletRequest);
+	public ResponseEntity<?> createNewToken(@RequestBody CreateTokenRequest request,HttpServletRequest httpServletRequest) {
+		TokenStatus tokenStatus = jwtSessionService.createToken(request,httpServletRequest);
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 

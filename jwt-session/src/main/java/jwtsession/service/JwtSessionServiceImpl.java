@@ -135,7 +135,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 	}
 
 	@Override
-	public TokenStatus generateToken(CreateTokenRequest request,HttpServletRequest httpServletRequest) {
+	public TokenStatus createToken(CreateTokenRequest request,HttpServletRequest httpServletRequest) {
 
 		TokenStatus tokenStatus = new TokenStatus();
 		JwtSessionEntity entity = dtoToEntityConvertor.createTokenRequestDtoToJwtSessionEntityConversion(request,httpServletRequest);
