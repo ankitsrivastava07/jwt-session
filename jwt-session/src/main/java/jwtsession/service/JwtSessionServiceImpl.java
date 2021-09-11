@@ -64,6 +64,8 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 				if((jwtSessionEntity=jwtSessionDao.findByTokenIdentity(dtoToEntityConvertor.getTokenIdentity(accessToken)))!=null) {
 					tokenStatus.setMessage(TokenStatusConstant.TOKEN_EXPIRED_TIME+" "+(jwtSessionEntity.getExpireAt()));
 					tokenStatus.setIsAccessTokenNewCreated(Boolean.FALSE);
+					tokenStatus.setCreatedAt(jwtSessionEntity.getCreatedAt());
+					tokenStatus.setExpireAt(TokenStatusConstant.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getExpireAt());
 				}else tokenStatus.setMessage(TokenStatusConstant.TOKEN_EXPIRED);
 				return tokenStatus;
 			}

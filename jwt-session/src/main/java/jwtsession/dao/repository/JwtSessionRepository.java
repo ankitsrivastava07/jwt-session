@@ -15,7 +15,7 @@ public interface JwtSessionRepository extends JpaRepository<JwtSessionEntity, Lo
 	JwtSessionEntity findByAccessToken(String accessToken);
 
 	@Query(value="select * from token_session where identity =?1 and is_active = true and is_logined = true ",nativeQuery = true)
-	JwtSessionEntity findByTokenIdentityNumber(String identityToken);
+	JwtSessionEntity findByIdentityToken(String identityToken);
 
 	@Query(value="select * from token_session where identity =?1 and is_active = false and is_logined = false",nativeQuery = true)
 	JwtSessionEntity findByTokenIdentity(String identityToken);
