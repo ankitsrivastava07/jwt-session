@@ -8,20 +8,9 @@ import java.util.TimeZone;
 
 public class DateUtil {
 
-    public static LocalDateTime addDays(long days){
-        LocalDateTime localDateTime= LocalDateTime.now();
-        localDateTime.plusDays(days);
-        return localDateTime;
-    }
-
-    public static LocalDateTime getExpireDate(long days){
-        return addDays(days);
-    }
-
     public static LocalDateTime setExpireTime(long minutes){
         return LocalDateTime.now().plusMinutes(minutes);
     }
-
     public static Date setExpiraryDaysToRefreshToken(int days){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());

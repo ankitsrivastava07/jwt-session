@@ -72,7 +72,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 				tokenStatus.setStatus(Boolean.TRUE);
 				//jwtSessionEntity.setTokenIdentity(jwtAccessTokenUtil.generateAccessToken(jwtSessionEntity.getAccessToken()));
 				tokenStatus.setCreatedAt(jwtSessionEntity.getCreatedAt());
-				tokenStatus.setExpireAt(jwtSessionEntity.getExpireAt());
+				tokenStatus.setExpireAt(TokenStatusConstant.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getExpireAt());
 				tokenStatus.setFirstName(jwtSessionEntity.getFirstName());
 				tokenStatus.setUserId(jwtSessionEntity.getUserId());
 				tokenStatus.setAccessToken(jwtSessionEntity.getAccessToken());
@@ -96,6 +96,10 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 			else if(jwtSessionEntity!=null && jwtSessionEntity.getExpireAt().before(new Date())) {
 				tokenStatus.setStatus(Boolean.FALSE);
 				tokenStatus.setMessage(TokenStatusConstant.TOKEN_EXPIRED);
+				tokenStatus.setCreatedAt(jwtSessionEntity.getCreatedAt());
+				tokenStatus.setFirstName(jwtSessionEntity.getFirstName());
+				tokenStatus.setUserId(jwtSessionEntity.getUserId());
+				tokenStatus.setExpireAt(TokenStatusConstant.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getExpireAt());
 				return tokenStatus;
 			}
 			else if(jwtSessionEntity!=null) {
@@ -112,11 +116,11 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 				tokenStatus.setStatus(Boolean.TRUE);
 				tokenStatus.setFirstName(jwtSessionEntity.getFirstName());
 				tokenStatus.setAccessToken(jwtSessionEntity.getAccessToken());
-				tokenStatus.setExpireAt(jwtSessionEntity.getExpireAt());
+				tokenStatus.setExpireAt(TokenStatusConstant.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getExpireAt());
 				return tokenStatus;
 			}
 		}
-		tokenStatus.setExpireAt(jwtSessionEntity.getExpireAt());
+		tokenStatus.setExpireAt(TokenStatusConstant.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getExpireAt());
 		return tokenStatus;
 	}
 
@@ -141,7 +145,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 		tokenStatus.setAccessToken(accessToken);
 		tokenStatus.setFirstName(entity.getFirstName());
 		tokenStatus.setCreatedAt(entity.getCreatedAt());
-		tokenStatus.setExpireAt(entity.getExpireAt());
+		tokenStatus.setExpireAt(TokenStatusConstant.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+entity.getExpireAt());
 		return tokenStatus;
 	}
 

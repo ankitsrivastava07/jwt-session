@@ -15,6 +15,6 @@ public class TokenStatus {
 	private Long userId;
 	private Date createdAt;
 	private Boolean isAccessTokenNewCreated=Boolean.FALSE;
-	private Date expireAt;
+	private String expireAt;
 	private String firstName;
 }
