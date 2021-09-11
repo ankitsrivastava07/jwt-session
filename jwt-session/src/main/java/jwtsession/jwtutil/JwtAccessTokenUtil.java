@@ -17,7 +17,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtAccessTokenUtil {
 
-	public static final long JWT_TOKEN_VALIDITY = 20 * 60 * 1;
+	public static final long JWT_TOKEN_VALIDITY = 1 * 60 * 1;
 
 	private String secret = "CHowlongistheencryptiondecryptionkeyforanassymetricalgorithmsuchasAESIfIuseAESbithowmanycharactersshouldItypeinformykeyWhataboutbitHoHowlongistheencryptiondecrHowlongistheencryptiondecryptionkeyforanassymetricalgorithmsuchasAESIfIuseAESbithowmanycharactersshouldItypeinformykeyWhataboutbityptionkeyforanassymetricalgorithmsuchasAESIfIuseAESbithowmanycharactersshouldItypeinformykeyWhataboutbitwlongistheencryptiondecryptionkeyforanassymetricalgorithmsuchasAESIfIuseAESbithowmanycharactersshouldItypeinformykeyWhataboutbitlosedThisquesClosedyearsagotionisofftopicItisnotcurrentlyacceptinganswersWanttoimprovethisquestionUpdatethequestionsoitsontopicforInformationSecurityStackExchangen";
 
@@ -29,9 +29,9 @@ public class JwtAccessTokenUtil {
 		return Long.valueOf(getClaimFromToken(token, Claims::getSubject));
 	}
 
+	//retrieve expiration date from jwt token
 	public Date getExpirationDateFromToken(String token) {
-		final Claims claims = getAllClaimsFromToken(token);
-		return claims.get("exp",Date.class);
+		return getClaimFromToken(token, Claims::getExpiration);
 	}
 
 	public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
@@ -68,7 +68,7 @@ public class JwtAccessTokenUtil {
 				.compact();
 	}
 
-	public Boolean validateToken(String refreshToken) {
-		return isTokenExpired(refreshToken);
+	public void validateToken(String token) {
+		isTokenExpired(token);
 	}
 }

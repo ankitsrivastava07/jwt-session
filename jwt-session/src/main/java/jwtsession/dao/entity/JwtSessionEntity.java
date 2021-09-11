@@ -63,13 +63,13 @@ public class JwtSessionEntity {
 
 	@PrePersist
 	public void prePersist() {
-		this.createdAt = new Date();
+		this.createdAt = DateUtil.todayDate();
 		this.expireAt=DateUtil.addDays(1);
 	}
 
 	@PreUpdate
 	public void preUpdate() {
-		this.createdAt = new Date();
+		this.createdAt = DateUtil.todayDate();
 		this.expireAt= DateUtil.addDays(1);
 	}
 

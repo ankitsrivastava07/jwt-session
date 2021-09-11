@@ -95,7 +95,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 			return tokenStatus;
 			}
 
-			else if(jwtSessionEntity!=null && jwtSessionEntity.getExpireAt().before(new Date())) {
+			else if(jwtSessionEntity!=null && jwtSessionEntity.getExpireAt().before(DateUtil.todayDate())) {
 				tokenStatus.setStatus(Boolean.FALSE);
 				tokenStatus.setMessage(TokenStatusConstant.TOKEN_EXPIRED);
 				tokenStatus.setCreatedAt(jwtSessionEntity.getCreatedAt());

@@ -26,7 +26,11 @@ public class DateUtil {
     }
 
     public static Date todayDate(){
-        return new Date();
+        TimeZone tz = TimeZone.getTimeZone("IST");
+        Calendar calendar = Calendar.getInstance(tz);
+        calendar.setTime(new Date());
+        Date date=calendar.getTime();
+        return date;
     }
 
     public static Date addMinutes(int minutes){
