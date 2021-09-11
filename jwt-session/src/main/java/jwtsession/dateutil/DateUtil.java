@@ -1,5 +1,6 @@
 package jwtsession.dateutil;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -62,4 +63,11 @@ public class DateUtil {
         calendar.set(Calendar.MILLISECOND,0);
         return calendar.getTime();
     }
+
+    public static String dateFormat(Date date){
+        DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        String formattedDate = dateFormat.format(date);
+        return formattedDate;
+    }
+
 }
