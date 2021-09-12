@@ -14,7 +14,6 @@ public class DateUtil {
     }
     public static Date setExpiraryDaysToRefreshToken(int days){
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
         calendar.add(Calendar.DATE, days);
         return calendar.getTime();
     }
@@ -29,14 +28,12 @@ public class DateUtil {
     public static Date todayDate(){
         TimeZone tz = TimeZone.getTimeZone("IST");
         Calendar calendar = Calendar.getInstance(tz);
-        calendar.setTime(new Date());
         Date date=calendar.getTime();
         return date;
     }
 
     public static Date addMinutes(int minutes){
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
         calendar.add(Calendar.MINUTE, minutes);
         return calendar.getTime();
     }
@@ -45,7 +42,6 @@ public class DateUtil {
         Date date = new Date();
         TimeZone tz = TimeZone.getTimeZone("IST");
         Calendar calendar = Calendar.getInstance(tz);
-        calendar.setTime(date);
         calendar.setTimeZone(tz);
         calendar.set(Calendar.SECOND,0);
         calendar.set(Calendar.MILLISECOND,0);
