@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.io.DecodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,15 @@ public class GlobalExceptionHandle {
 	@ExceptionHandler({JwtException.class})
 	public ResponseEntity<?> tokenException(JwtException exception) {
 		logger.info("Jwt Exception due to "+exception.getMessage());
+		TokenStatus tokenStatus = new TokenStatus();
+		tokenStatus.setStatus(Boolean.FALSE);
+		tokenStatus.setMessage("Your session has been expired.Please login again");
+		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
+	}
+
+	@ExceptionHandler({DecodingException.class})
+	public ResponseEntity<?> decodingException(DecodingException exception) {
+		logger.info("DecodingException due to "+exception.getMessage());
 		TokenStatus tokenStatus = new TokenStatus();
 		tokenStatus.setStatus(Boolean.FALSE);
 		tokenStatus.setMessage("Your session has been expired.Please login again");
