@@ -61,10 +61,14 @@ public class JwtSessionEntity {
 	@Column(name="hostServer",nullable = false)
 	private String hostServer;
 
+	@Column(name="sign_out_at",nullable = false)
+	private Date accessTokenExpireAt;
+
 	@PrePersist
 	public void prePersist() {
 		this.createdAt = DateUtil.todayDate();
 		this.expireAt=DateUtil.addDays(1);
+		this.accessTokenExpireAt=DateUtil.todayDate();
 	}
 
 	@PreUpdate

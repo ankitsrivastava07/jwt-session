@@ -15,7 +15,7 @@ public interface JwtSessionService {
 
 	TokenStatus createToken(CreateTokenRequest request, HttpServletRequest httpServletRequest);
 
-	TokenStatus removeToken(String token);
+	TokenStatus invalidateToken(String token);
 
 	TokenStatus removeAllTokens(JwtSessionDto dto);
 

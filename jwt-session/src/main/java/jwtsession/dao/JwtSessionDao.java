@@ -10,7 +10,7 @@ public interface JwtSessionDao {
 	JwtSessionEntity findByTokenIdentity(String identityToken);
 	JwtSessionEntity saveToken(JwtSessionEntity entity);
 
-	JwtSessionEntity removeToken(String token);
+	JwtSessionEntity invalidateToken(String token);
 	Integer updateSessionToken(JwtSessionEntity jwtSessionEntity);
 	Boolean isTokenExist(String token);
 }

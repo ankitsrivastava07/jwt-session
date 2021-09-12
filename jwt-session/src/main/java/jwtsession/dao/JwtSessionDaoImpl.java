@@ -1,6 +1,7 @@
 package jwtsession.dao;
 
 import jwtsession.convertor.DtoToEntityConvertor;
+import jwtsession.dateutil.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,10 +44,11 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 
 	@Transactional
 	@Override
-	public JwtSessionEntity removeToken(String tokenIdentityNumber) {
+	public JwtSessionEntity invalidateToken(String tokenIdentityNumber) {
 		JwtSessionEntity entity = repository.findByIdentityToken(tokenIdentityNumber);
 		if(entity!=null){
 		entity.setIsActive(Boolean.FALSE);
+		entity.setAccessTokenExpireAt(DateUtil.todayDate());
 		entity.setIsLogined(Boolean.FALSE);
 			repository.save(entity);
 		}

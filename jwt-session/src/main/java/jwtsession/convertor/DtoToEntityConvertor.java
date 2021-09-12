@@ -1,11 +1,13 @@
 package jwtsession.convertor;
 
+import ch.qos.logback.core.util.DatePatternToRegexUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import jwtsession.controller.CreateTokenRequest;
 import jwtsession.dao.JwtSessionDao;
 import jwtsession.dao.entity.JwtSessionEntity;
+import jwtsession.dateutil.DateUtil;
 import jwtsession.jwtutil.JwtAccessTokenUtil;
 import jwtsession.jwtutil.JwtRefreshTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +38,14 @@ public class DtoToEntityConvertor {
             entity.setIsActive(Boolean.FALSE);
             entity.setIsLogined(Boolean.FALSE);
             String identityNumber = getTokenIdentity(request.getToken());
-            jwtSessionDao.removeToken(tokenIdentityNumber);
+            jwtSessionDao.invalidateToken(tokenIdentityNumber);
         }else{
             entity.setIsActive(Boolean.TRUE);
             entity.setIsLogined(Boolean.TRUE);
         }
         entity.setFirstName(request.getFirstName());
         entity.setUserId(request.getUserId());
+        entity.setAccessTokenExpireAt(DateUtil.todayDate());
         String browserDetail = httpServletRequest.getHeader("User-Agent");
         entity.setDeviceName(browserDetail);
         entity.setClientIp(httpServletRequest.getRemoteAddr());
