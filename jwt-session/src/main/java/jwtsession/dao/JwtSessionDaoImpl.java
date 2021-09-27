@@ -20,7 +20,7 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 	}
 
 	@Override
-	public JwtSessionEntity findByIdentityToken(String tokenIdentityNumber) {
+	public JwtSessionEntity findByIdentityTokenIsActiveTrueAndLoginTrue(String tokenIdentityNumber) {
 		return repository.findByIdentityToken(tokenIdentityNumber);
 	}
 

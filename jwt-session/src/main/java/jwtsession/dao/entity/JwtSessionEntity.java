@@ -37,8 +37,8 @@ public class JwtSessionEntity {
 	@Column(name = "is_logined", nullable = false,columnDefinition = "boolean default false")
 	private Boolean isLogined;
 
-	@Column(name="expire_at",nullable = false)
-	private Date expireAt;
+	@Column(name="refresh_token_expireat",nullable = false)
+	private Date refreshTokenExpireAt;
 
 	@Column(name = "refresh_token", nullable = false)
 	private String refreshToken;
@@ -67,14 +67,14 @@ public class JwtSessionEntity {
 	@PrePersist
 	public void prePersist() {
 		this.createdAt = DateUtil.todayDate();
-		this.expireAt=DateUtil.addDays(1);
+		this.refreshTokenExpireAt=DateUtil.addDays(1);
 		this.accessTokenExpireAt=DateUtil.todayDate();
 	}
 
 	@PreUpdate
 	public void preUpdate() {
 		this.createdAt = DateUtil.todayDate();
-		this.expireAt= DateUtil.addDays(1);
+		this.refreshTokenExpireAt= DateUtil.addDays(1);
 	}
 
 }
