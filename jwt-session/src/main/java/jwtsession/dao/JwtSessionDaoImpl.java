@@ -21,7 +21,8 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 
 	@Override
 	public JwtSessionEntity findByIdentityTokenIsActiveTrueAndLoginTrue(String tokenIdentityNumber) {
-		return repository.findByIdentityToken(tokenIdentityNumber);
+		JwtSessionEntity jwt=repository.findByTokenIdentity(tokenIdentityNumber);
+		return repository.findByIdentityTokenIsActiveTrueAndLoginTrue(tokenIdentityNumber);
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 	@Transactional
 	@Override
 	public JwtSessionEntity invalidateToken(String tokenIdentityNumber) {
-		JwtSessionEntity entity = repository.findByIdentityToken(tokenIdentityNumber);
+		JwtSessionEntity entity = repository.findByIdentityTokenIsActiveTrueAndLoginTrue(tokenIdentityNumber);
 		if(entity!=null){
 		entity.setIsActive(Boolean.FALSE);
 		entity.setAccessTokenExpireAt(DateUtil.todayDate());

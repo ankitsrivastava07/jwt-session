@@ -1,24 +1,17 @@
 package jwtsession.service;
 
-import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.*;
 import jwtsession.controller.JwtSessionDto;
 import jwtsession.convertor.DtoToEntityConvertor;
 import jwtsession.dateutil.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.jsonwebtoken.ExpiredJwtException;
-import jwtsession.constant.TokenStatusConstant;
+import jwtsession.constant.TokenConstantResponse;
 import jwtsession.controller.CreateTokenRequest;
 import jwtsession.controller.TokenStatus;
 import jwtsession.dao.JwtSessionDao;
@@ -52,7 +45,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 	@Override
 	@Transactional
 	@CircuitBreaker(name = "users", fallbackMethod = "defaultfallbackMethodGetFirstName")
-	public TokenStatus isValidToken(String accessToken) {
+	public TokenStatus validateToken(String accessToken) {
 		TokenStatus tokenStatus = new TokenStatus();
 		JwtSessionEntity jwtSessionEntity = null;
 
@@ -62,48 +55,44 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 			if (jwtSessionEntity==null){
 				tokenStatus.setStatus(Boolean.FALSE);
 				if((jwtSessionEntity=jwtSessionDao.findByTokenIdentity(dtoToEntityConvertor.getTokenIdentity(accessToken)))!=null) {
-					tokenStatus.setMessage(TokenStatusConstant.TOKEN_EXPIRED_TIME+" "+DateUtil.dateFormat(jwtSessionEntity.getAccessTokenExpireAt())+"(GMT +5:30)");
+					tokenStatus.setMessage(TokenConstantResponse.TOKEN_EXPIRED_TIME+" "+DateUtil.dateFormat(jwtSessionEntity.getAccessTokenExpireAt())+"(GMT +5:30)");
 					tokenStatus.setIsAccessTokenNewCreated(Boolean.FALSE);
 					tokenStatus.setCreatedAt(jwtSessionEntity.getCreatedAt());
-					tokenStatus.setExpireAt(TokenStatusConstant.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getRefreshTokenExpireAt());
-				}else tokenStatus.setMessage(TokenStatusConstant.TOKEN_EXPIRED);
+					tokenStatus.setExpireAt(TokenConstantResponse.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getRefreshTokenExpireAt());
+				}else tokenStatus.setMessage(TokenConstantResponse.TOKEN_EXPIRED);
 				return tokenStatus;
 			}
 			else if(jwtSessionEntity!=null){
 				tokenStatus.setAccessToken(accessToken);
 				tokenStatus.setStatus(Boolean.TRUE);
-				//jwtSessionEntity.setTokenIdentity(jwtAccessTokenUtil.generateAccessToken(jwtSessionEntity.getAccessToken()));
 				tokenStatus.setCreatedAt(jwtSessionEntity.getCreatedAt());
-				tokenStatus.setExpireAt(TokenStatusConstant.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getRefreshTokenExpireAt());
+				tokenStatus.setExpireAt(TokenConstantResponse.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getRefreshTokenExpireAt());
 				tokenStatus.setFirstName(jwtSessionEntity.getFirstName());
 				tokenStatus.setUserId(jwtSessionEntity.getUserId());
 				tokenStatus.setAccessToken(jwtSessionEntity.getAccessToken());
-				tokenStatus.setMessage(TokenStatusConstant.TOKEN_VERIFIED_MESSAGE);
+				tokenStatus.setMessage(TokenConstantResponse.TOKEN_VERIFIED_MESSAGE);
 				return tokenStatus;
 			}
-
 		}catch (ExpiredJwtException exception){
 			jwtSessionEntity =jwtSessionDao.findByIdentityTokenIsActiveTrueAndLoginTrue(dtoToEntityConvertor.getTokenIdentity(accessToken));
-
 			if(jwtSessionEntity==null){
 				tokenStatus.setStatus(Boolean.FALSE);
-				tokenStatus.setMessage(TokenStatusConstant.TOKEN_EXPIRED);
+				tokenStatus.setMessage(TokenConstantResponse.TOKEN_EXPIRED);
 				return tokenStatus;
 			}
-
 			else if(jwtSessionEntity!=null && jwtSessionEntity.getRefreshTokenExpireAt().before(DateUtil.todayDate())) {
 				tokenStatus.setStatus(Boolean.FALSE);
-				tokenStatus.setMessage(TokenStatusConstant.TOKEN_EXPIRED);
+				tokenStatus.setMessage(TokenConstantResponse.TOKEN_EXPIRED);
 				tokenStatus.setCreatedAt(jwtSessionEntity.getCreatedAt());
 				tokenStatus.setFirstName(jwtSessionEntity.getFirstName());
 				tokenStatus.setUserId(jwtSessionEntity.getUserId());
-				tokenStatus.setExpireAt(TokenStatusConstant.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getRefreshTokenExpireAt());
+				tokenStatus.setExpireAt(TokenConstantResponse.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getRefreshTokenExpireAt());
 				return tokenStatus;
 			}
 			else if(jwtSessionEntity!=null) {
 				tokenStatus.setStatus(Boolean.TRUE);
-				tokenStatus.setMessage(TokenStatusConstant.TOKEN_CREATED);
-				jwtSessionEntity.setAccessToken(jwtAccessTokenUtil.generateAccessToken(jwtSessionEntity.getUserId()));
+				tokenStatus.setMessage(TokenConstantResponse.TOKEN_CREATED);
+				jwtSessionEntity.setAccessToken(jwtAccessTokenUtil.createAccessToken(jwtSessionEntity.getUserId()));
 				jwtSessionEntity.setRefreshToken(jwtRefreshTokenUtil.generateRefreshToken(jwtSessionEntity.getUserId()));
 				String identity=dtoToEntityConvertor.getTokenIdentity(jwtSessionEntity.getAccessToken());
 				jwtSessionEntity.setTokenIdentity(identity);
@@ -111,21 +100,23 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 				tokenStatus.setCreatedAt(jwtSessionEntity.getCreatedAt());
 				tokenStatus.setIsAccessTokenNewCreated(Boolean.TRUE);
 				tokenStatus.setStatus(Boolean.TRUE);
+				tokenStatus.setCreatedAt(new Date());
 				tokenStatus.setFirstName(jwtSessionEntity.getFirstName());
 				tokenStatus.setAccessToken(jwtSessionEntity.getAccessToken());
-				tokenStatus.setExpireAt(TokenStatusConstant.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getRefreshTokenExpireAt());
+				tokenStatus.setExpireAt(TokenConstantResponse.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getRefreshTokenExpireAt());
+				tokenStatus.setHttpStatus(HttpStatus.OK.value());
 				return tokenStatus;
 			}
 		}
-		tokenStatus.setExpireAt(TokenStatusConstant.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getRefreshTokenExpireAt());
+		tokenStatus.setExpireAt(TokenConstantResponse.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getRefreshTokenExpireAt());
 		return tokenStatus;
 	}
 
 	public TokenStatus defaultfallbackMethodGetFirstName(feign.RetryableException exception) {
 
 		TokenStatus tokenStatus = new TokenStatus();
-		tokenStatus.setStatus(TokenStatusConstant.FALSE);
-		tokenStatus.setMessage(TokenStatusConstant.SERVER_DOWN_DEFAULT_MESSAGE);
+		tokenStatus.setStatus(TokenConstantResponse.FALSE);
+		tokenStatus.setMessage(TokenConstantResponse.SERVER_DOWN_DEFAULT_MESSAGE);
 		return tokenStatus;
 	}
 
@@ -136,13 +127,14 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 		JwtSessionEntity entity = dtoToEntityConvertor.createTokenRequestDtoToJwtSessionEntityConversion(request,httpServletRequest);
 		entity = jwtSessionDao.saveToken(entity);
 		String accessToken=entity.getAccessToken();
-		tokenStatus.setStatus(TokenStatusConstant.TRUE);
-		tokenStatus.setMessage(TokenStatusConstant.MESSAGE);
+		tokenStatus.setStatus(TokenConstantResponse.TRUE);
+		tokenStatus.setMessage(TokenConstantResponse.MESSAGE);
 		tokenStatus.setUserId(entity.getUserId());
 		tokenStatus.setAccessToken(accessToken);
 		tokenStatus.setFirstName(entity.getFirstName());
 		tokenStatus.setCreatedAt(entity.getCreatedAt());
-		tokenStatus.setExpireAt(TokenStatusConstant.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+entity.getRefreshTokenExpireAt());
+		tokenStatus.setHttpStatus(HttpStatus.OK.value());
+		tokenStatus.setExpireAt(TokenConstantResponse.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+entity.getRefreshTokenExpireAt());
 		return tokenStatus;
 	}
 
@@ -152,12 +144,11 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 		JwtSessionEntity entity = jwtSessionDao.invalidateToken(tokenIdentityNumber);
 		TokenStatus tokenStatus = new TokenStatus();
 		if (entity != null) {
-			tokenStatus.setStatus(TokenStatusConstant.TRUE);
-			tokenStatus.setMessage(TokenStatusConstant.LOGOUT);
+			tokenStatus.setStatus(TokenConstantResponse.TRUE);
+			tokenStatus.setMessage(TokenConstantResponse.LOGOUT);
 		}
-		tokenStatus.setStatus(TokenStatusConstant.TRUE);
-		tokenStatus.setMessage(TokenStatusConstant.LOGOUT);
-
+		tokenStatus.setStatus(TokenConstantResponse.TRUE);
+		tokenStatus.setMessage(TokenConstantResponse.LOGOUT);
 		return tokenStatus;
 	}
 
@@ -168,34 +159,32 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 		JwtSessionEntity jwtSessionEntity = jwtSessionDao.findByIdentityTokenIsActiveTrueAndLoginTrue(identity);
 		TokenStatus tokenStatus = new TokenStatus();
 		if (jwtSessionEntity != null) {
-			String accessToken = jwtAccessTokenUtil.generateAccessToken(jwtSessionEntity.getUserId());
+			String accessToken = jwtAccessTokenUtil.createAccessToken(jwtSessionEntity.getUserId());
 			String refreshToken = jwtRefreshTokenUtil.generateRefreshToken(jwtSessionEntity.getUserId());
 			jwtSessionEntity.setAccessToken(accessToken);
 			jwtSessionEntity.setRefreshToken(refreshToken);
-			tokenStatus.setStatus(TokenStatusConstant.TRUE);
-			tokenStatus.setMessage(TokenStatusConstant.MESSAGE);
+			tokenStatus.setStatus(TokenConstantResponse.TRUE);
+			tokenStatus.setMessage(TokenConstantResponse.MESSAGE);
+			tokenStatus.setHttpStatus(HttpStatus.OK.value());
 			tokenStatus.setAccessToken(accessToken);
 		}
-
 		return tokenStatus;
 	}
 
 	@Transactional
 	@Override
 	public TokenStatus removeAllTokens(JwtSessionDto dto) {
-
 		TokenStatus tokenStatus = new TokenStatus();
 		Long userId = dto.getUserId();
 		if(dto.getUserId()==null && dto.getToken()==null){
 			tokenStatus.setCreatedAt(DateUtil.todayDate());
-			tokenStatus.setMessage(TokenStatusConstant.INVALID_REQUEST);
+			tokenStatus.setMessage(TokenConstantResponse.INVALID_REQUEST);
 			return tokenStatus;
 		}
 		Integer delete=repository.removeAllTokensById(userId,DateUtil.addMonths(-1),new Date());
-		tokenStatus.setStatus(TokenStatusConstant.FALSE);
+		tokenStatus.setStatus(TokenConstantResponse.FALSE);
 		tokenStatus.setCreatedAt(DateUtil.todayDate());
-		tokenStatus.setMessage(TokenStatusConstant.MESSAGE);
-
+		tokenStatus.setMessage(TokenConstantResponse.MESSAGE);
 		return tokenStatus;
 	}
 }

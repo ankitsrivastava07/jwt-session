@@ -1,6 +1,6 @@
 package jwtsession.constant;
 
-public class TokenStatusConstant {
+public class TokenConstantResponse {
 
 	public static final Boolean TRUE = true;
 	public static final Boolean FALSE = false;
@@ -13,4 +13,6 @@ public class TokenStatusConstant {
 	public static final String LOGOUT = "Your have successfully logout.";
 	public static final String TOKEN_CREATED = "Your new session has created successfully ";
 	public static final String SERVER_DOWN_DEFAULT_MESSAGE = "Sorry Server is currently down.Please try again later";
+	public static final String METHOD_NOT_READABLE_EXCEPTION_DEFAULT_MESSAGE="Invalid json request";
+	public static final String HEADER_TOKEN_MISSING="Unauthorize request, missing ";
 }

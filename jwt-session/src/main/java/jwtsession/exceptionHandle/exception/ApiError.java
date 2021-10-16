@@ -1,9 +1,9 @@
-package jwtsession.exceptionHandle;
-
-import java.util.Date;
+package jwtsession.exceptionHandle.exception;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
 
 @Getter
 @Setter

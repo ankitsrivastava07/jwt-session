@@ -17,7 +17,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtAccessTokenUtil {
 
-	public static final long JWT_TOKEN_VALIDITY = 20 * 60 * 1;
+	public static final long JWT_TOKEN_VALIDITY = 1 * 60 * 1;
 
 	private String secret = "CHowlongistheencryptiondecryptionkeyforanassymetricalgorithmsuchasAESIfIuseAESbithowmanycharactersshouldItypeinformykeyWhataboutbitHoHowlongistheencryptiondecrHowlongistheencryptiondecryptionkeyforanassymetricalgorithmsuchasAESIfIuseAESbithowmanycharactersshouldItypeinformykeyWhataboutbityptionkeyforanassymetricalgorithmsuchasAESIfIuseAESbithowmanycharactersshouldItypeinformykeyWhataboutbitwlongistheencryptiondecryptionkeyforanassymetricalgorithmsuchasAESIfIuseAESbithowmanycharactersshouldItypeinformykeyWhataboutbitlosedThisquesClosedyearsagotionisofftopicItisnotcurrentlyacceptinganswersWanttoimprovethisquestionUpdatethequestionsoitsontopicforInformationSecurityStackExchangen";
 
@@ -48,9 +48,9 @@ public class JwtAccessTokenUtil {
 		return expiration.before(new Date());
 	}
 
-	public String generateAccessToken(Long userId) {
+	public String createAccessToken(Long userId) {
 		Map<String, Object> claims = new HashMap<>();
-		return doGenerateToken(claims, userId);
+		return createToken(claims, userId);
 	}
 
 	public String getTokenIdentityNumber(String accessToken) {
@@ -59,7 +59,7 @@ public class JwtAccessTokenUtil {
 		return identity;
 	}
 
-	private String doGenerateToken(Map<String, Object> claims, Long userId) {
+	private String createToken(Map<String, Object> claims, Long userId) {
 		return Jwts.builder().setSubject(String.valueOf(userId))
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))

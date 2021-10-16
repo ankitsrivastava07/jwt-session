@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface JwtSessionService {
 
-	TokenStatus isValidToken(String jwt) throws JsonProcessingException;
+	TokenStatus validateToken(String jwt) throws JsonProcessingException;
 
 	TokenStatus createToken(CreateTokenRequest request, HttpServletRequest httpServletRequest);
 

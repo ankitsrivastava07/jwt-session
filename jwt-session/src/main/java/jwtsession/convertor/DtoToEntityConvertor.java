@@ -29,7 +29,7 @@ public class DtoToEntityConvertor {
 
     public JwtSessionEntity createTokenRequestDtoToJwtSessionEntityConversion(CreateTokenRequest request,HttpServletRequest httpServletRequest){
 
-        String accessToken = jwtAccessTokenUtil.generateAccessToken(request.getUserId());
+        String accessToken = jwtAccessTokenUtil.createAccessToken(request.getUserId());
         String refreshToken = jwtRefreshTokenUtil.generateRefreshToken(request.getUserId());
         String tokenIdentityNumber = jwtAccessTokenUtil.getTokenIdentityNumber(accessToken);
         JwtSessionEntity entity = new JwtSessionEntity();
