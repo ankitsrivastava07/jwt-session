@@ -36,8 +36,8 @@ public class JwtSessionController {
 	}
 
 	@PostMapping("/invalidate-token")
-	public ResponseEntity<?> invalidateToken(@RequestBody String token) {
-		TokenStatus tokenStatus = jwtSessionService.invalidateToken(token);
+	public ResponseEntity<?> invalidateToken(@RequestHeader("Authentication") String authentication,@RequestHeader("browser")String browser) {
+		TokenStatus tokenStatus = jwtSessionService.invalidateToken(authentication,browser);
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 
@@ -47,14 +47,10 @@ public class JwtSessionController {
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 
-	@PostMapping(value = "/generate-new-token")
-	public ResponseEntity<?> generateNewToken(@RequestBody String token) {
-		TokenStatus tokenStatus = jwtSessionService.generateNewToken(token);
-
-
-
-
-		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
+	@PostMapping(value = "/refresh")
+	public ResponseEntity<?> refreshToken(@RequestHeader("Authentication") String authentication,@RequestHeader("browser")String browser) {
+		TokenStatus tokenStatus = jwtSessionService.refreshToken(authentication);
+		return tokenStatus==null? new ResponseEntity<>("Un authorized request",HttpStatus.UNAUTHORIZED) : new ResponseEntity<>(tokenStatus,HttpStatus.OK);
 	}
 
 }

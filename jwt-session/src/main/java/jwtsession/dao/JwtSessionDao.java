@@ -9,7 +9,7 @@ public interface JwtSessionDao {
 	JwtSessionEntity findByIdentityTokenIsActiveTrueAndLoginTrue(String identityToken);
 
 	JwtSessionEntity findByTokenIdentity(String identityToken);
-	JwtSessionEntity saveToken(JwtSessionEntity entity);
+	JwtSessionEntity save(JwtSessionEntity entity);
 
 	JwtSessionEntity invalidateToken(String token);
 	Integer updateSessionToken(JwtSessionEntity jwtSessionEntity);

@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @Data
 public class TokenStatus {
 
-	private boolean status;
+	private boolean status=Boolean.FALSE;
 	private String message= TokenConstantResponse.TOKEN_EXPIRED;
 	private String accessToken;
 	private Long userId;
@@ -18,4 +18,6 @@ public class TokenStatus {
 	private String expireAt;
 	private String firstName;
 	private Integer httpStatus= HttpStatus.UNAUTHORIZED.value();
+	private String browser;
+	private Boolean refreshTokenExpired=Boolean.FALSE;
 }

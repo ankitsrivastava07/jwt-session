@@ -15,10 +15,10 @@ public interface JwtSessionService {
 
 	TokenStatus createToken(CreateTokenRequest request, HttpServletRequest httpServletRequest);
 
-	TokenStatus invalidateToken(String token);
+	TokenStatus invalidateToken(String token,String browser);
 
 	TokenStatus removeAllTokens(JwtSessionDto dto);
 
-	TokenStatus generateNewToken(String token);
+	TokenStatus refreshToken(String token);
 
 }

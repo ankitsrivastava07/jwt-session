@@ -39,7 +39,7 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 	}
 
 	@Override
-	public JwtSessionEntity saveToken(JwtSessionEntity entity) {
+	public JwtSessionEntity save(JwtSessionEntity entity) {
 		return repository.save(entity);
 	}
 

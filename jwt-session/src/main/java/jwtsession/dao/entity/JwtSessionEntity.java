@@ -49,9 +49,6 @@ public class JwtSessionEntity {
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
 
-	@Column(name="userAgent",nullable = false)
-	private String deviceName;
-
 	@Column(name="identity",nullable = false)
 	private String tokenIdentity;
 
@@ -63,6 +60,9 @@ public class JwtSessionEntity {
 
 	@Column(name="sign_out_at",nullable = false)
 	private Date accessTokenExpireAt;
+
+	@Column(name="browser",nullable = false,unique = true)
+	private String browser;
 
 	@PrePersist
 	public void prePersist() {

@@ -9,4 +9,5 @@ public class CreateTokenRequest {
 	private String firstName;
 	private Long userId;
 	private String token;
+	private String browser;
 }
