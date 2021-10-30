@@ -61,7 +61,7 @@ public class JwtSessionEntity {
 	@Column(name="sign_out_at",nullable = false)
 	private Date accessTokenExpireAt;
 
-	@Column(name="browser",nullable = false,unique = true)
+	@Column(name="browser",nullable = false)
 	private String browser;
 
 	@PrePersist
