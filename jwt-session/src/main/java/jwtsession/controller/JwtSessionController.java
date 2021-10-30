@@ -30,7 +30,7 @@ public class JwtSessionController {
 	}
 
 	@PostMapping("/validate-token")
-	public ResponseEntity<?> validateToken(@RequestHeader(name="AuthenticationToken",required = true) String accessToken, HttpServletRequest request) throws JsonProcessingException {
+	public ResponseEntity<?> validateToken(@RequestHeader("Authentication") String accessToken, HttpServletRequest request) throws JsonProcessingException {
 		TokenStatus tokenStatus = jwtSessionService.validateToken(accessToken.trim());
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
