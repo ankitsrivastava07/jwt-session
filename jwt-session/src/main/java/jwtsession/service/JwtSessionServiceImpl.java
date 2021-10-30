@@ -139,7 +139,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 	}
 
 	@Override
-	public TokenStatus invalidateToken(String token,String browser) {
+	public TokenStatus invalidateToken(String token) {
 		String tokenIdentityNumber = jwtAccessTokenUtil.getTokenIdentityNumber(token);
 		JwtSessionEntity entity = jwtSessionDao.invalidateToken(tokenIdentityNumber);
 		TokenStatus tokenStatus = new TokenStatus();
