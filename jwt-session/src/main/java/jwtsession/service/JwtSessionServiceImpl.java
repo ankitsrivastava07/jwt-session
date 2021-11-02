@@ -136,6 +136,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 		tokenStatus.setFirstName(entity.getFirstName());
 		tokenStatus.setCreatedAt(entity.getCreatedAt());
 		tokenStatus.setHttpStatus(HttpStatus.OK.value());
+		tokenStatus.setBrowser(entity.getBrowser());
 		tokenStatus.setExpireAt(TokenConstantResponse.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+entity.getRefreshTokenExpireAt());
 		return tokenStatus;
 	}
