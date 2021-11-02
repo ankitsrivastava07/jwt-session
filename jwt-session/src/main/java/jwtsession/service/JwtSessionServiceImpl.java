@@ -85,6 +85,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 				tokenStatus.setCreatedAt(jwtSessionEntity.getCreatedAt());
 				tokenStatus.setFirstName(jwtSessionEntity.getFirstName());
 				tokenStatus.setUserId(jwtSessionEntity.getUserId());
+				tokenStatus.setBrowser(jwtSessionEntity.getBrowser());
 				tokenStatus.setExpireAt(TokenConstantResponse.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getRefreshTokenExpireAt());
 				return tokenStatus;
 			}
@@ -105,6 +106,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 				tokenStatus.setAccessToken(jwtSessionEntity.getAccessToken());
 				tokenStatus.setExpireAt(TokenConstantResponse.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getRefreshTokenExpireAt());
 				tokenStatus.setHttpStatus(HttpStatus.OK.value());
+				tokenStatus.setBrowser(jwtSessionEntity.getBrowser());
 				return tokenStatus;
 			}
 		}
