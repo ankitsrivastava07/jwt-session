@@ -8,6 +8,7 @@ import jwtsession.dao.entity.JwtSessionEntity;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 public interface JwtSessionRepository extends JpaRepository<JwtSessionEntity, Long> {
 
@@ -35,4 +36,6 @@ public interface JwtSessionRepository extends JpaRepository<JwtSessionEntity, Lo
 	@Modifying
 	@Query(value = "delete from token_session where access_token = ?1", nativeQuery = true)
 	Integer removeToken(String accessToken);
+
+	List<JwtSessionEntity> findByUserIdAndIsActiveTrue(Long userId,Boolean active);
 }

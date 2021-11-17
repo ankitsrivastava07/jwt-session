@@ -14,4 +14,6 @@ public interface JwtSessionDao {
 	JwtSessionEntity invalidateToken(String token);
 	Integer updateSessionToken(JwtSessionEntity jwtSessionEntity);
 	Boolean isTokenExist(String token);
+
+	void invalidateSessions(Long userId,Boolean active);
 }

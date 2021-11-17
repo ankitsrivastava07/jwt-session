@@ -125,7 +125,6 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 
 	@Override
 	public TokenStatus createToken(CreateTokenRequest request,HttpServletRequest httpServletRequest) {
-
 		TokenStatus tokenStatus = new TokenStatus();
 		JwtSessionEntity entity = dtoToEntityConvertor.createTokenRequestDtoToJwtSessionEntityConversion(request,httpServletRequest);
 		entity = jwtSessionDao.save(entity);
@@ -198,7 +197,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 			tokenStatus.setMessage(TokenConstantResponse.INVALID_REQUEST);
 			return tokenStatus;
 		}
-		Integer delete=repository.removeAllTokensById(userId,DateUtil.addMonths(-1),new Date());
+		jwtSessionDao.invalidateSessions(userId,true);
 		tokenStatus.setStatus(TokenConstantResponse.FALSE);
 		tokenStatus.setCreatedAt(DateUtil.todayDate());
 		tokenStatus.setMessage(TokenConstantResponse.MESSAGE);

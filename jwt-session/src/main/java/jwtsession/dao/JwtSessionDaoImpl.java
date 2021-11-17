@@ -9,6 +9,8 @@ import jwtsession.controller.TokenStatus;
 import jwtsession.dao.entity.JwtSessionEntity;
 import jwtsession.dao.repository.JwtSessionRepository;
 
+import java.util.List;
+
 @Repository
 public class JwtSessionDaoImpl implements JwtSessionDao {
 
@@ -59,5 +61,11 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 	@Override
 	public Boolean isTokenExist(String token) {
 		return repository.findByAccessToken(token) == null ? false : true;
+	}
+
+	public void invalidateSessions(Long userId,Boolean active){
+       List<JwtSessionEntity> entities=repository.findByUserIdAndIsActiveTrue(userId, active);
+	   entities.stream().forEach(entity-> entity.setIsActive(Boolean.FALSE));
+	   repository.saveAll(entities);
 	}
 }
