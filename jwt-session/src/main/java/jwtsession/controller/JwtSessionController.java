@@ -43,7 +43,7 @@ public class JwtSessionController {
 
 	@PostMapping(value = "/invalidate-tokens")
 	public ResponseEntity<?> invalidateTokens(@RequestBody JwtSessionDto dto, HttpServletRequest request) {
-		TokenStatus tokenStatus = jwtSessionService.removeAllTokens(dto);
+		TokenStatus tokenStatus = jwtSessionService.invalidateSessions(dto);
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 

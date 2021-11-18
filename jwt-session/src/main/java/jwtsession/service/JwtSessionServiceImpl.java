@@ -189,7 +189,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 
 	@Transactional
 	@Override
-	public TokenStatus removeAllTokens(JwtSessionDto dto) {
+	public TokenStatus invalidateSessions(JwtSessionDto dto) {
 		TokenStatus tokenStatus = new TokenStatus();
 		Long userId = dto.getUserId();
 		if(dto.getUserId()==null && dto.getToken()==null){

@@ -13,11 +13,4 @@ public class JwtSessionApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(JwtSessionApplication.class, args);
 	}
-
-	@Bean
-	public RestTemplate restTemplateBean() {
-		return new RestTemplate();
-	}
-	
-	
 }

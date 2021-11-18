@@ -64,8 +64,10 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 	}
 
 	public void invalidateSessions(Long userId,Boolean active){
-       List<JwtSessionEntity> entities=repository.findByUserIdAndIsActiveTrue(userId, active);
-	   entities.stream().forEach(entity-> entity.setIsActive(Boolean.FALSE));
+       List<JwtSessionEntity> entities=repository.findByUserIdAndIsActiveTrue(userId);
+	   entities.stream().forEach(entity-> {entity.setIsActive(Boolean.FALSE);
+	   entity.setIsLogined(Boolean.FALSE);
+	   });
 	   repository.saveAll(entities);
 	}
 }
