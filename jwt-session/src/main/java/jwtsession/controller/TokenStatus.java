@@ -17,7 +17,7 @@ public class TokenStatus {
 	private Boolean isAccessTokenNewCreated=Boolean.FALSE;
 	private String expireAt;
 	private String firstName;
-	private Integer httpStatus= HttpStatus.UNAUTHORIZED.value();
+	private Integer httpStatus= HttpStatus.OK.value();
 	private String browser;
 	private Boolean refreshTokenExpired=Boolean.FALSE;
 	private Boolean accessTokenNew=Boolean.FALSE;
