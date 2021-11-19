@@ -142,7 +142,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 	}
 
 	@Override
-	public TokenStatus invalidateToken(String token) {
+	public TokenStatus invalidateSession(String token) {
 		String tokenIdentityNumber = jwtAccessTokenUtil.getTokenIdentityNumber(token);
 		JwtSessionEntity entity = jwtSessionDao.invalidateToken(tokenIdentityNumber);
 		TokenStatus tokenStatus = new TokenStatus();

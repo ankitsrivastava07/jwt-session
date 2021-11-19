@@ -35,9 +35,9 @@ public class JwtSessionController {
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 
-	@PostMapping("/invalidate-token")
-	public ResponseEntity<?> invalidateToken(@RequestHeader("Authentication") String authentication) {
-		TokenStatus tokenStatus = jwtSessionService.invalidateToken(authentication);
+	@PostMapping("/invalidate-session")
+	public ResponseEntity<?> invalidateSession(@RequestHeader("Authentication") String authentication) {
+		TokenStatus tokenStatus = jwtSessionService.invalidateSession(authentication);
 		return new ResponseEntity<>(tokenStatus, HttpStatus.OK);
 	}
 
