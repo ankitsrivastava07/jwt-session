@@ -65,6 +65,7 @@ public class JwtAccessTokenUtil {
 				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
 				.signWith(SignatureAlgorithm.HS512, secret)
 				.claim("identity", RandomString.getAlphaNumericString(20))
+				.claim("browserToken", RandomString.getAlphaNumericString(20))
 				.compact();
 	}
 
