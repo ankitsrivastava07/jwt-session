@@ -28,7 +28,7 @@ public class JwtSessionEntity {
 	@Column(name = "user_id", nullable = false)
 	private Long userId;
 
-	@Column(name = "access_token", nullable = false)
+	@Column(name = "access_token", nullable = false,length = 1000)
 	private String accessToken;
 
 	@Column(name = "created_at", nullable = false)
@@ -37,7 +37,7 @@ public class JwtSessionEntity {
 	@Column(name = "is_logined", nullable = false,columnDefinition = "boolean default false")
 	private Boolean isLogined;
 
-	@Column(name="refresh_token_expireat",nullable = false)
+	@Column(name="refresh_token_expireat",nullable = false,length = 1000)
 	private Date refreshTokenExpireAt;
 
 	@Column(name = "refresh_token", nullable = false)
