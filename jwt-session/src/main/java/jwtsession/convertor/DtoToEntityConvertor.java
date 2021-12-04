@@ -37,7 +37,7 @@ public class DtoToEntityConvertor {
         if(request.getToken()!=null){
             entity.setIsActive(Boolean.FALSE);
             entity.setIsLogined(Boolean.FALSE);
-            String identityNumber = getTokenIdentity(request.getToken());
+            String identityNumber = getTokenIdentity(request.getToken(),"identity");
             jwtSessionDao.invalidateToken(tokenIdentityNumber);
         }else{
             entity.setIsActive(Boolean.TRUE);
@@ -46,7 +46,7 @@ public class DtoToEntityConvertor {
         entity.setFirstName(request.getFirstName());
         entity.setUserId(request.getUserId());
         entity.setAccessTokenExpireAt(DateUtil.todayDate());
-        entity.setBrowser(request.getBrowser());
+        entity.setBrowser(getTokenIdentity(accessToken,"browser"));
         entity.setClientIp(httpServletRequest.getRemoteAddr());
         entity.setHostServer(httpServletRequest.getRemoteHost());
         entity.setAccessToken(accessToken);
@@ -55,14 +55,14 @@ public class DtoToEntityConvertor {
         return entity;
     }
 
-    public String getTokenIdentity(String accessToken){
+    public String getTokenIdentity(String accessToken,String value){
         try {
             Base64.Decoder decoder = Base64.getUrlDecoder();
             String[] parts = accessToken.split("\\."); // Splitting header, payload and signature
             String payload = new String(decoder.decode(parts[1]));
             ObjectMapper mapper = new ObjectMapper();
             Map<String, Object> map = mapper.readValue(payload, Map.class);
-            return String.valueOf(map.get("identity"));
+            return String.valueOf(map.get(value));
         }catch (JsonProcessingException exception){
             exception.printStackTrace();
         }

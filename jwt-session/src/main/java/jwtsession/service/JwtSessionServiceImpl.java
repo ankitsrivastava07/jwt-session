@@ -43,17 +43,16 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 
 	@Override
 	@Transactional
-	@CircuitBreaker(name = "users", fallbackMethod = "defaultfallbackMethodGetFirstName")
 	public TokenStatus validateToken(String accessToken) {
 		TokenStatus tokenStatus = new TokenStatus();
 		JwtSessionEntity jwtSessionEntity = null;
 
 		try {
 			jwtAccessTokenUtil.validateToken(accessToken);
-			jwtSessionEntity = jwtSessionDao.findByIdentityTokenIsActiveTrueAndLoginTrue(dtoToEntityConvertor.getTokenIdentity(accessToken));
+			jwtSessionEntity = jwtSessionDao.findByIdentityTokenIsActiveTrueAndLoginTrue(dtoToEntityConvertor.getTokenIdentity(accessToken,"identity"));
 			if (jwtSessionEntity==null){
 				tokenStatus.setStatus(Boolean.FALSE);
-				if((jwtSessionEntity=jwtSessionDao.findByTokenIdentity(dtoToEntityConvertor.getTokenIdentity(accessToken)))!=null) {
+				if((jwtSessionEntity=jwtSessionDao.findByTokenIdentity(dtoToEntityConvertor.getTokenIdentity(accessToken,"identity")))!=null) {
 					tokenStatus.setMessage(TokenConstantResponse.TOKEN_EXPIRED_TIME+" "+DateUtil.dateFormat(jwtSessionEntity.getAccessTokenExpireAt())+"(GMT +5:30)");
 					tokenStatus.setIsAccessTokenNewCreated(Boolean.FALSE);
 					tokenStatus.setCreatedAt(jwtSessionEntity.getCreatedAt());
@@ -74,7 +73,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 				return tokenStatus;
 			}
 		}catch (ExpiredJwtException exception){
-			jwtSessionEntity =jwtSessionDao.findByIdentityTokenIsActiveTrueAndLoginTrue(dtoToEntityConvertor.getTokenIdentity(accessToken));
+			jwtSessionEntity =jwtSessionDao.findByIdentityTokenIsActiveTrueAndLoginTrue(dtoToEntityConvertor.getTokenIdentity(accessToken,"identity"));
 			if(jwtSessionEntity==null){
 				tokenStatus.setStatus(Boolean.FALSE);
 				tokenStatus.setMessage(TokenConstantResponse.TOKEN_EXPIRED);
@@ -95,7 +94,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 				tokenStatus.setMessage(TokenConstantResponse.TOKEN_CREATED);
 				jwtSessionEntity.setAccessToken(jwtAccessTokenUtil.createAccessToken(jwtSessionEntity.getUserId()));
 				jwtSessionEntity.setRefreshToken(jwtRefreshTokenUtil.generateRefreshToken(jwtSessionEntity.getUserId()));
-				String identity=dtoToEntityConvertor.getTokenIdentity(jwtSessionEntity.getAccessToken());
+				String identity=dtoToEntityConvertor.getTokenIdentity(jwtSessionEntity.getAccessToken(),"identity");
 				jwtSessionEntity.setTokenIdentity(identity);
 				jwtSessionEntity=jwtSessionDao.save(jwtSessionEntity);
 				tokenStatus.setCreatedAt(jwtSessionEntity.getCreatedAt());
@@ -112,14 +111,6 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 			}
 		}
 		tokenStatus.setExpireAt(TokenConstantResponse.REFRESH_TOKEN_EXPIRED_DEFAULT_MESSAGE+jwtSessionEntity.getRefreshTokenExpireAt());
-		return tokenStatus;
-	}
-
-	public TokenStatus defaultfallbackMethodGetFirstName(feign.RetryableException exception) {
-
-		TokenStatus tokenStatus = new TokenStatus();
-		tokenStatus.setStatus(TokenConstantResponse.FALSE);
-		tokenStatus.setMessage(TokenConstantResponse.SERVER_DOWN_DEFAULT_MESSAGE);
 		return tokenStatus;
 	}
 
@@ -162,9 +153,6 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 		JwtSessionEntity jwtSessionEntity = jwtSessionDao.findByIdentityTokenIsActiveTrueAndLoginTrue(identity);
 		TokenStatus tokenStatus = new TokenStatus();
 		if (jwtSessionEntity != null) {
-
-			if(jwtSessionEntity.getRefreshTokenExpireAt().before(DateUtil.todayDate()))
-				return null;
 
 			String accessToken = jwtAccessTokenUtil.createAccessToken(jwtSessionEntity.getUserId());
 			String refreshToken = jwtRefreshTokenUtil.generateRefreshToken(jwtSessionEntity.getUserId());

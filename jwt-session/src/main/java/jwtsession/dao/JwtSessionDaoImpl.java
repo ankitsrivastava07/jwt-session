@@ -36,7 +36,7 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 	@Transactional
 	public Integer updateSessionToken(JwtSessionEntity jwtSessionEntity) {
 		DtoToEntityConvertor dtoToEntityConvertor = new DtoToEntityConvertor();
-		String newIdentity=dtoToEntityConvertor.getTokenIdentity(jwtSessionEntity.getAccessToken());
+		String newIdentity=dtoToEntityConvertor.getTokenIdentity(jwtSessionEntity.getAccessToken(),"identity");
 		return repository.updateSessionToken(jwtSessionEntity.getAccessToken(),jwtSessionEntity.getRefreshToken(),newIdentity,jwtSessionEntity.getTokenIdentity());
 	}
 
