@@ -43,8 +43,8 @@ public class JwtSessionEntity {
 	@Column(name = "refresh_token", nullable = false)
 	private String refreshToken;
 
-	@Column(name="is_active",columnDefinition = "boolean default false")
-	private Boolean isActive;
+	@Column(name="status",columnDefinition = "boolean default false")
+	private Boolean status;
 
 	@Column(name = "first_name", nullable = false)
 	private String firstName;

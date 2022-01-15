@@ -35,12 +35,12 @@ public class DtoToEntityConvertor {
         JwtSessionEntity entity = new JwtSessionEntity();
 
         if(request.getToken()!=null){
-            entity.setIsActive(Boolean.FALSE);
+            entity.setStatus(Boolean.FALSE);
             entity.setIsLogined(Boolean.FALSE);
             String identityNumber = getTokenIdentity(request.getToken(),"identity");
             jwtSessionDao.invalidateToken(tokenIdentityNumber);
         }else{
-            entity.setIsActive(Boolean.TRUE);
+            entity.setStatus(Boolean.TRUE);
             entity.setIsLogined(Boolean.TRUE);
         }
         entity.setFirstName(request.getFirstName());

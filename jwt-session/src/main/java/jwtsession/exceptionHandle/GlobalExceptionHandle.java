@@ -75,7 +75,7 @@ public class GlobalExceptionHandle {
 		String token= Objects.isNull(browser)?authentication : authentication;
 		String identity = jwtAccessTokenUtil.getTokenIdentityNumber(token);
 		JwtSessionEntity jwtSessionEntity=jwtSessionRepository.findByTokenIdentity(identity);
-		jwtSessionEntity.setIsActive(Boolean.FALSE);
+		jwtSessionEntity.setStatus(Boolean.FALSE);
 		jwtSessionEntity.setIsLogined(Boolean.FALSE);
 		jwtSessionEntity=jwtSessionRepository.save(jwtSessionEntity);
 		ApiErrorMissingAuthenticationToken apiError = new ApiErrorMissingAuthenticationToken(new Date(), HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.name(),

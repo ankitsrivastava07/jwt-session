@@ -22,9 +22,9 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 	}
 
 	@Override
-	public JwtSessionEntity findByIdentityTokenIsActiveTrueAndLoginTrue(String tokenIdentityNumber) {
+	public JwtSessionEntity findByIdentityTokenStatusTrueAndLoginTrue(String tokenIdentityNumber) {
 		JwtSessionEntity jwt=repository.findByTokenIdentity(tokenIdentityNumber);
-		return repository.findByIdentityTokenIsActiveTrueAndLoginTrue(tokenIdentityNumber);
+		return repository.findByIdentityTokenStatusTrueAndLoginTrue(tokenIdentityNumber);
 	}
 
 	@Override
@@ -48,9 +48,9 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 	@Transactional
 	@Override
 	public JwtSessionEntity invalidateToken(String tokenIdentityNumber) {
-		JwtSessionEntity entity = repository.findByIdentityTokenIsActiveTrueAndLoginTrue(tokenIdentityNumber);
+		JwtSessionEntity entity = repository.findByIdentityTokenStatusTrueAndLoginTrue(tokenIdentityNumber);
 		if(entity!=null){
-		entity.setIsActive(Boolean.FALSE);
+		entity.setStatus(Boolean.FALSE);
 		entity.setAccessTokenExpireAt(DateUtil.todayDate());
 		entity.setIsLogined(Boolean.FALSE);
 			repository.save(entity);
@@ -64,8 +64,8 @@ public class JwtSessionDaoImpl implements JwtSessionDao {
 	}
 
 	public void invalidateSessions(Long userId,Boolean active){
-       List<JwtSessionEntity> entities=repository.findByUserIdAndIsActiveTrue(userId);
-	   entities.stream().forEach(entity-> {entity.setIsActive(Boolean.FALSE);
+       List<JwtSessionEntity> entities=repository.findByUserIdAndStatusTrue(userId);
+	   entities.stream().forEach(entity-> {entity.setStatus(Boolean.FALSE);
 	   entity.setIsLogined(Boolean.FALSE);
 	   });
 	   repository.saveAll(entities);

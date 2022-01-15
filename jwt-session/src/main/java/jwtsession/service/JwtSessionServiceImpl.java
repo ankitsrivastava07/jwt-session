@@ -1,5 +1,4 @@
 package jwtsession.service;
-
 import java.util.*;
 import jwtsession.controller.JwtSessionDto;
 import jwtsession.convertor.DtoToEntityConvertor;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.jsonwebtoken.ExpiredJwtException;
 import jwtsession.constant.TokenConstantResponse;
 import jwtsession.controller.CreateTokenRequest;
@@ -18,9 +16,7 @@ import jwtsession.dao.entity.JwtSessionEntity;
 import jwtsession.dao.repository.JwtSessionRepository;
 import jwtsession.jwtutil.JwtAccessTokenUtil;
 import jwtsession.jwtutil.JwtRefreshTokenUtil;
-
 import javax.servlet.http.HttpServletRequest;
-
 @Service
 public class JwtSessionServiceImpl implements JwtSessionService {
 
@@ -49,7 +45,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 
 		try {
 			jwtAccessTokenUtil.validateToken(accessToken);
-			jwtSessionEntity = jwtSessionDao.findByIdentityTokenIsActiveTrueAndLoginTrue(dtoToEntityConvertor.getTokenIdentity(accessToken,"identity"));
+			jwtSessionEntity = jwtSessionDao.findByIdentityTokenStatusTrueAndLoginTrue(dtoToEntityConvertor.getTokenIdentity(accessToken,"identity"));
 			if (jwtSessionEntity==null){
 				tokenStatus.setStatus(Boolean.FALSE);
 				if((jwtSessionEntity=jwtSessionDao.findByTokenIdentity(dtoToEntityConvertor.getTokenIdentity(accessToken,"identity")))!=null) {
@@ -73,7 +69,7 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 				return tokenStatus;
 			}
 		}catch (ExpiredJwtException exception){
-			jwtSessionEntity =jwtSessionDao.findByIdentityTokenIsActiveTrueAndLoginTrue(dtoToEntityConvertor.getTokenIdentity(accessToken,"identity"));
+			jwtSessionEntity =jwtSessionDao.findByIdentityTokenStatusTrueAndLoginTrue(dtoToEntityConvertor.getTokenIdentity(accessToken,"identity"));
 			if(jwtSessionEntity==null){
 				tokenStatus.setStatus(Boolean.FALSE);
 				tokenStatus.setMessage(TokenConstantResponse.TOKEN_EXPIRED);
@@ -150,10 +146,9 @@ public class JwtSessionServiceImpl implements JwtSessionService {
 	@Override
 	public TokenStatus refreshToken(String token) {
 		String identity = jwtAccessTokenUtil.getTokenIdentityNumber(token);
-		JwtSessionEntity jwtSessionEntity = jwtSessionDao.findByIdentityTokenIsActiveTrueAndLoginTrue(identity);
+		JwtSessionEntity jwtSessionEntity = jwtSessionDao.findByIdentityTokenStatusTrueAndLoginTrue(identity);
 		TokenStatus tokenStatus = new TokenStatus();
 		if (jwtSessionEntity != null) {
-
 			String accessToken = jwtAccessTokenUtil.createAccessToken(jwtSessionEntity.getUserId());
 			String refreshToken = jwtRefreshTokenUtil.generateRefreshToken(jwtSessionEntity.getUserId());
 			jwtSessionEntity.setAccessToken(accessToken);

@@ -15,10 +15,10 @@ public interface JwtSessionRepository extends JpaRepository<JwtSessionEntity, Lo
 	@Query(value = "select * from token_session where access_token = ?1 ", nativeQuery = true)
 	JwtSessionEntity findByAccessToken(String accessToken);
 
-	@Query(value="select * from token_session where identity =?1 and is_active = true and is_logined = true ",nativeQuery = true)
-	JwtSessionEntity findByIdentityTokenIsActiveTrueAndLoginTrue(String identityToken);
+	@Query(value="select * from token_session where identity =?1 and status = true and is_logined = true ",nativeQuery = true)
+	JwtSessionEntity findByIdentityTokenStatusTrueAndLoginTrue(String identityToken);
 
-	@Query(value="select * from token_session where identity =?1 and is_active = false and is_logined = false",nativeQuery = true)
+	@Query(value="select * from token_session where identity =?1 and status = false and is_logined = false",nativeQuery = true)
 	JwtSessionEntity findByTokenIdentity(String identityToken);
 
 	@Modifying(clearAutomatically = true)
@@ -37,5 +37,5 @@ public interface JwtSessionRepository extends JpaRepository<JwtSessionEntity, Lo
 	@Query(value = "delete from token_session where access_token = ?1", nativeQuery = true)
 	Integer removeToken(String accessToken);
 
-	List<JwtSessionEntity> findByUserIdAndIsActiveTrue(Long userId);
+	List<JwtSessionEntity> findByUserIdAndStatusTrue(Long userId);
 }
