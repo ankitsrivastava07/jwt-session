@@ -46,7 +46,7 @@ public class DtoToEntityConvertor {
         entity.setFirstName(request.getFirstName());
         entity.setUserId(request.getUserId());
         entity.setAccessTokenExpireAt(DateUtil.todayDate());
-        entity.setBrowser(getTokenIdentity(accessToken,"browser"));
+        entity.setBrowser(request.getBrowser());
         entity.setClientIp(httpServletRequest.getRemoteAddr());
         entity.setHostServer(httpServletRequest.getRemoteHost());
         entity.setAccessToken(accessToken);
