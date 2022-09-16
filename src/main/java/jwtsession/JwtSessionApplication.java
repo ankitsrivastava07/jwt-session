@@ -9,7 +9,6 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 @EnableFeignClients
 public class JwtSessionApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(JwtSessionApplication.class, args);
 	}
